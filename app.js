@@ -283,9 +283,11 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
-app.post('/game/:id/answer', verifyUser, function(req, res) {	
-	var clipId = req.body.clipId;	
+
+
+app.post('/game/:id', verifyUser, function(req, res) {
 	
+	var clipId = req.body.clipId;
 	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
@@ -306,7 +308,6 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
@@ -403,6 +404,12 @@ var randGame = function(){
 	return gameArray;
 }
 
+app.get('leaders/:count', verifyUser, function(req, res){
+	var count = 10;
+	if(!req.params.count){
+	}
+		
+});
 mongooseAuth.helpExpress(app);
 
 app.listen(conf.server.port);
