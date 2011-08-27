@@ -120,8 +120,8 @@ function verifyUser(req, res, next) {
 }
 
 function verifyGameOpening(req, res, next) {
-	var query = Game.count({_id:req.params.id, status: 'waiting'}, function(err, count){
-		if(count > 0){
+	var query = Game.find({_id:req.params.id, status: 'waiting'}, function(err, doc){
+		if(doc.length > 0 && doc[0].players.length < 4){
 			next();
 		}else{
 			res.send({"message":"invalid game or game has already started"});
@@ -202,27 +202,47 @@ app.post('/game', verifyUser, function(req, res) {
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 	var conditions = {_id: req.params.id}
 			, update = { $push: { players: req.user}}; 
-	Game.update(conditions, update, function(err, docs){
-		if(!err){
-			Game.find(conditions, function(err, doc){
-				res.render('game', doc[0]);
-					if(doc[0].players.length > 3){	
-						var gameListChannel = pusher.channel("gameList");
-						var gameListInactiveEvent = "markInactiveEvent";
-						var gameListInactiveData = conditions;	
-						gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
-					});
-				}else{
-					var gameListChannel = pusher.channel("gameList");
-					var gameListIncrementEvent = "incrementEvent";
-					var gameListIncrementData = conditions;
-					gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
-					});
-				}
-			});	
+	Game.find(conditions, function(err, docs){
+		var userArray = [];
+		var playersArray = docs[0].players;
+		for(var i=0; i< playersArray.length; i++){
+			userArray.push(playersArray[i]._id+"");
+			console.log("user array id element is : " + typeof playersArray[i]._id);
+		}	
+		console.log("user Array " + userArray);
+		console.log("request params: " + req.user._id);
+		console.log("request params type: " + typeof req.user._id);
+		if(userArray.indexOf(req.user._id) == -1){
+				Game.update(conditions, update, function(err, docs){
+					if(!err){
+						Game.find(conditions, function(err, doc){
+							res.render('game', doc[0]);
+								if(doc[0].players.length > 3){	
+									var gameListChannel = pusher.channel("gameList");
+									var gameListInactiveEvent = "markInactiveEvent";
+									var gameListInactiveData = conditions;	
+									gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
+								});
+							}else{
+								var gameListChannel = pusher.channel("gameList");
+								var gameListIncrementEvent = "incrementEvent";
+								var gameListIncrementData = conditions;
+								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
+								});
+							}
+              var updateUserChannel = pusher.channel(req.params.id);
+              var updateUserEvent = "newUsers";
+              var updateUserData = doc[0].players;
+              updateUserChannel.trigger(updateUserEvent, updateUserData, function(err, request, response){
+            });	
+						});	
+					}
+			});
+		}else{
+			res.render('game', docs[0]);
 		}
 	});
-  // TODO
+	  // TODO
 });
 
 // Game API
@@ -263,10 +283,12 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
+
+
 app.post('/game/:id', verifyUser, function(req, res) {
 	
-	
-	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
+	var clipId = req.body.clipId;
+	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
 			var result;
@@ -286,7 +308,6 @@ app.post('/game/:id', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					//res.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
@@ -337,10 +358,9 @@ app.post('/game/:id', verifyUser, function(req, res) {
 					break;
 				
 			}
-			var gameListChannel = pusher.channel("gameList");
-			var gameListIncrementEvent = "answerEvent";
-			//var gameListIncrementData = conditions;
-			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.body.question, result: result});
+			var gameAnswerChannel = pusher.channel(req.params.id);
+			var gameAnswerEvent = "answerEvent";
+			gameAnswerChannel.trigger(gameAnswerEvent, {userId: req.user._id, question: req.body.question, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
 			}
@@ -384,6 +404,12 @@ var randGame = function(){
 	return gameArray;
 }
 
+app.get('leaders/:count', verifyUser, function(req, res){
+	var count = 10;
+	if(!req.params.count){
+	}
+		
+});
 mongooseAuth.helpExpress(app);
 
 app.listen(conf.server.port);
