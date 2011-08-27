@@ -1,5 +1,4 @@
 var Clip = Backbone.Model.extend({
-  idAttribute: '_id',
 
   initialize: function() {
     _.bindAll(this, 'initializeQuestions');
@@ -8,6 +7,6 @@ var Clip = Backbone.Model.extend({
 
   initializeQuestions: function() {
     this.questions = new Questions();
-    this.questions.clipId = this.id;
+    this.questions.clipId = this.get('_id');
   }
 });

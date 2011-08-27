@@ -3,6 +3,8 @@ var ClipView = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 'render', 'unrender');
+
+    this.model.bind('destroy', this.unrender, this);
   },
 
   render: function() {
@@ -10,6 +12,6 @@ var ClipView = Backbone.View.extend({
   },
   
   unrender: function() {
-    $(this.el).remove();
+    $('#video-player object:nth-child(1)').remove();
   }
 });

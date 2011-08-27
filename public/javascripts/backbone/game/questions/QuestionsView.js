@@ -13,6 +13,7 @@ var QuestionsView = Backbone.View.extend({
     _(this.collection.models).each(function(question) {
       this.appendQuestion(question);
     }, this);
+    $(this.el).attr('visibility', 'visible');
   },
 
   unrender: function() {

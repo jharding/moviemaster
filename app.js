@@ -229,12 +229,12 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 								var gameListIncrementData = conditions;
 								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
 								});
-								var updateUserChannel = pusher.channel(req.params.id);
-								var updateUserEvent = "newUsers";
-								var updateUserData = doc[0].players;
-								updateUserChannel.trigger(updateUserEvent, updateUserData, function(err, request, response){
-							});	
 							}
+              var updateUserChannel = pusher.channel(req.params.id);
+              var updateUserEvent = "newUsers";
+              var updateUserData = doc[0].players;
+              updateUserChannel.trigger(updateUserEvent, updateUserData, function(err, request, response){
+            });	
 						});	
 					}
 			});
