@@ -1,0 +1,17 @@
+{
+  "author": "nodemaster",
+  "name": "nodemaster",
+  "description": "nko2",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nko2/nodemaster.git"
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {
+    "nko": "~0.1.0"
+  },
+  "devDependencies": {}
+}
