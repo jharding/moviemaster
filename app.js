@@ -223,6 +223,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
+	var conditions = {_id: req.params.id};
 	
 });
 
