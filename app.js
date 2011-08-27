@@ -163,7 +163,7 @@ app.get('/games', verifyUser, function(req, res) {
 
 // Game Creation and Joining
 
-app.get('/game/asdf', verifyUser, function(req, res) {
+app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
 	//gameInstance.players.push(req.user._id);
