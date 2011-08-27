@@ -161,9 +161,9 @@ app.get('/games', verifyUser, function(req, res) {
 		var responseJson = [];
 		for(var i in docs){
 			responseJson[i] = {
-				gamename: docs[i].gameName,
+				gameName: docs[i].gamename,
 				id: docs[i]._id,
-				numplayers: docs[i].players.length  
+				numPlayers: docs[i].players.length  
 		    };
         }
 		res.send(responseJson);
@@ -176,7 +176,9 @@ app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
 	//gameInstance.players.push(req.user._id);
-	gameInstance.gamename = req.params.gameName;
+             console.log("wtf");
+             console.log(req.body.gameName);
+	gameInstance.gamename = req.body.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
 	query.limit(1);

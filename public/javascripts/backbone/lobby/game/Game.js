@@ -5,6 +5,6 @@ var Game = Backbone.Model.extend({
       };
     },
     url: function() {
-        return "/game/" + this.id;
+        return "/game/" + this.id + "/";
     }
 });

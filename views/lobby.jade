@@ -13,8 +13,11 @@ script(id="game", type="text/html")
 //bootstrap collection
 script
   $(document).ready(function() {
-  var games = [{id:100, gameName:"first game", numPlayers:
-  1},{id:200, gameName:"second game", numPlayers: 2}];
-  App.gamesView.addAll(games);
+  $.get('/games', function(data) {
+       App.gamesView.addAll(data);
+  });
+  // var games = [{id:100, gameName:"first game", numPlayers:
+  // 1},{id:200, gameName:"second game", numPlayers: 2}];
+  // App.gamesView.addAll(games);
 
   });
