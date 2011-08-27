@@ -353,11 +353,15 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
-  // var conditions = {_id: req.params.id}
-  //   ,	update = {$set, {status: 'finished'}};
-  //   Game.update(conditions, update, function(err){
-  //   	//pusher sends game over signal
-  //   }); 
+  var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
+  Game.update(conditions, update, function(err){
+				  	//pusher sends game over signal
+			var userConditions = {_id: req.user._id},
+					userUpdate={$inc: {victories: 1}};
+			User.update(userConditions, update, function(err){
+				
+			});	
+  }); 
 });
 
 var randGame = function(){
