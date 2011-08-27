@@ -283,9 +283,11 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
-app.post('/game/:id/answer', verifyUser, function(req, res) {	
-	var clipId = req.body.clipId;	
+
+
+app.post('/game/:id', verifyUser, function(req, res) {
 	
+	var clipId = req.body.clipId;
 	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
@@ -306,7 +308,6 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					res.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
