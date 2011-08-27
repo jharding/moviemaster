@@ -263,7 +263,7 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
-app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
+app.post('/game/:id', verifyUser, function(req, res) {
 	
 	
 	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
@@ -286,7 +286,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.body.question, result: result});
+					//res.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
