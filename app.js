@@ -175,9 +175,6 @@ app.get('/games', verifyUser, function(req, res) {
 app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
-	//gameInstance.players.push(req.user._id);
-             console.log("wtf");
-             console.log(req.body.gameName);
 	gameInstance.gamename = req.body.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
@@ -210,19 +207,11 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 			Game.find(conditions, function(err, doc){
 				res.render('game', doc[0]);
 					if(doc[0].players.length > 3){	
-						update = { $set: { status: 'inPorogress'}}; 
-						Game.update(conditions, update, function(err){
-							var channel = pusher.channel(conditions._id);
-							var data = "startGame";
-							var pusherEvent = "startGame";
-							channel.trigger(pusherEvent, data, function(err, request, response){
-							});
-							var gameListChannel = pusher.channel("gameList");
-							var gameListInactiveEvent = "markInactiveEvent";
-							var gameListInactiveData = conditions;	
-							gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
-							});
-						});
+						var gameListChannel = pusher.channel("gameList");
+						var gameListInactiveEvent = "markInactiveEvent";
+						var gameListInactiveData = conditions;	
+						gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
+					});
 				}else{
 					var gameListChannel = pusher.channel("gameList");
 					var gameListIncrementEvent = "incrementEvent";
@@ -263,7 +252,17 @@ function levenshtein(str1, str2) {
     }
     return d[l1][l2];
 }
-
+app.post('/game/:id/start', verifyUser, function(req, res){
+	var conditions = {_id: req.params.id};
+	var update = { $set: { status: 'inPorogress'}}; 
+	Game.update(conditions, update, function(err){
+		var channel = pusher.channel(req.params.id);
+		var data = "startGame";
+		var pusherEvent = "startGame";
+		channel.trigger(pusherEvent, data, function(err, request, response){
+		});
+	});
+});
 app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 	
 	
@@ -369,7 +368,6 @@ app.del('game/:id', verifyUser, function(req, res) {
 });
 
 var randGame = function(){
-
 	var count = 4;
 	gameArray = [];
 	while(gameArray.length < 3){
