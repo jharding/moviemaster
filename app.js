@@ -306,7 +306,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.body.question, result: result});
+					res.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
@@ -403,6 +403,12 @@ var randGame = function(){
 	return gameArray;
 }
 
+app.get('leaders/:count', verifyUser, function(req, res){
+	var count = 10;
+	if(!req.params.count){
+	}
+		
+});
 mongooseAuth.helpExpress(app);
 
 app.listen(conf.server.port);
