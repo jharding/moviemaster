@@ -9,6 +9,7 @@ var Pusher = require('pusher');
 var mongoose = require('mongoose');
   Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
+var ObjectIdCreate = mongoose.Types.ObjectId;
 var mongooseAuth = require('mongoose-auth');
 
 // Initializing Pusher
@@ -33,6 +34,7 @@ var GameSchema = new Schema({
   created: { type: Date, default: Date.now },
   clips: [ ObjectId ], // should this be ids or embedded documents?
   players: [ ObjectId ],
+	gamename: String,
   status: {
     type: String,
     enum: [ 'waiting', 'inProgress', 'finished' ],
@@ -118,6 +120,13 @@ function verifyUser(req, res, next) {
 }
 
 function verifyGameOpening(req, res, next) {
+	var query = Game.count({_id:req.params.id, status: 'waiting'}, function(err, count){
+		if(count > 0){
+			next();
+		}else{
+			res.send({"message":"invalid game or game has already started"});
+		}
+	});	
   // TODO
 }
 
@@ -158,6 +167,7 @@ app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
 	gameInstance.players.push(req.user._id);
+	gameInstance.gamename = req.params.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
 	query.limit(1);
@@ -172,6 +182,7 @@ app.post('/game', verifyUser, function(req, res) {
 				gameInstance.clips.push(docs[0]._id);
 					gameInstance.save(function(err){
 						if(!err){
+							res.redirect('/game/'+gameInstance._id);
 						}		
 					});	
 			});
@@ -180,6 +191,8 @@ app.post('/game', verifyUser, function(req, res) {
 });
 
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
+	console.log("game id : " + req.params.id);
+	console.log("user id : " + req.user._id);
   // TODO
 });
 
