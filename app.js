@@ -304,6 +304,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					
 					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.20)) {
 						result = 'right';
+						break;
 					}
 					else {
 						result = 'wrong';
@@ -329,6 +330,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 						//console.log(answerDirector);
 						if (levenshtein(userDirector, answerDirector) < (answerDirector.length * 0.20)) {
 							result = 'right';
+							break;
 						}
 						else {
 							result = 'wrong';
@@ -342,15 +344,17 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					for (var i = 0; i < doc.actors.length; i++) {
 						var answerActor = 
 							doc.actors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
-						//console.log(userDirector);
-						//console.log(answerDirector);
+						console.log(userActor);
+						console.log(answerActor);
 						if (levenshtein(userActor, answerActor) < (answerActor.length * 0.20)) {
 							result = 'right';
+							break;
 						}
 						else {
 							result = 'wrong';
 						}
-						
+						console.log(levenshtein(userActor, answerActor));
+						console.log(answerActor.length * 0.20);
 					}
 					break;
 				default: 
