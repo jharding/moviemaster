@@ -283,9 +283,11 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
-app.post('/game/:id/answer', verifyUser, function(req, res) {	
-	var clipId = req.body.clipId;	
+
+
+app.post('/game/:id/answer', verifyUser, function(req, res) {
 	
+	var clipId = req.body.clipId;
 	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
@@ -306,7 +308,6 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
@@ -357,10 +358,9 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					break;
 				
 			}
-			var gameListChannel = pusher.channel("gameList");
-			var gameListIncrementEvent = "answerEvent";
-			//var gameListIncrementData = conditions;
-			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.body.question, result: result});
+			var gameAnswerChannel = pusher.channel(req.params.id);
+			var gameAnswerEvent = "answerEvent";
+			gameAnswerChannel.trigger(gameAnswerEvent, {userId: req.user._id, question: req.body.question, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
 			}
@@ -375,7 +375,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 	
 });
 
-app.del('game/:id', verifyUser, function(req, res) {
+app.del('/game/:id', verifyUser, function(req, res) {
   // TODO
   var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
   Game.update(conditions, update, function(err){
@@ -404,6 +404,18 @@ var randGame = function(){
 	return gameArray;
 }
 
+app.get('/leaders/:count', verifyUser, function(req, res){
+	var count = 10;
+	if(req.params.count){
+		count = req.params.count;
+	}
+	var leaderQuery = User.find({});
+	leaderQuery.sort({victories:-1});
+	leaderQuery.limit(count);
+	leaderQuery.exec(function(err, docs){
+		res.send(JSON.stringify(docs));
+	});		
+});
 mongooseAuth.helpExpress(app);
 
 app.listen(conf.server.port);

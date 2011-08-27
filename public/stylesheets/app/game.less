@@ -36,11 +36,20 @@
   #question-list {
     margin-top: 30px;
     margin-bottom: 30px;
+    .border-radius(5px);
     visibility: none;
+    background: #333;
     .box-shadow();
     .question {
-      p {
+      cursor: pointer;
+      padding: 5px 0;
+      span {
         #font .sans-serif(bold, 16px, 24px);
+        margin-left: 10px;
+      }
+      &.selected {
+        background: #86C9EF;
+        color: #fff;
       }
     }
   }

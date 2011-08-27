@@ -22,6 +22,11 @@ var QuestionView = Backbone.View.extend({
   },
 
   giveQuestionFocus: function() {
+    $('#question-list .question').removeClass('selected');
+    $(this.el).addClass('selected');
+
+    $('#question-answer').focus();
+
     $('form label', this.questionPrompt).text(this.model.get('longText'));
     $('#question-clip-id', this.questionPrompt).attr('value', this.model.collection.clipId);
     $('#question-type', this.questionPrompt).attr('value', this.model.get('questionType'));
