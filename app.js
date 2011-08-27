@@ -194,7 +194,7 @@ app.post('/game', verifyUser, function(req, res) {
 							res.redirect('/game/'+gameInstance._id);
 							var gameListChannel = pusher.channel("gameList");
 							var gameListNewGameEvent = "newGameEvent";
-							var gameListNewGameData = {gamename:req.body.gameName, id:gameInstance._id, numplayers:0};	
+							var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
 							gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
 						});
 
