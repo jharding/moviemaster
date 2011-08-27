@@ -32,4 +32,8 @@ script
       var gameModel = App.games.get(conditions._id);
       App.gamesView.remove(gameModel);
     });
+    channel.bind('newGameEvent', function(conditions) {
+      var gameModel = new Game(conditions);
+      App.gamesView.addOne(gameModel);
+    });
     });
