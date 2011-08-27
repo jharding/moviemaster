@@ -26,14 +26,14 @@ var ClipSchema = new Schema({
   title: String,
   year: Number,
   director: String, // could be an array
-  acotrs: [ String ],
+  actors: [ String ],
   url: String
 });
 
 var GameSchema = new Schema({
   created: { type: Date, default: Date.now },
-  clips: [ ObjectId ], // should this be ids or embedded documents?
-  players: [ ObjectId ],
+  clips: [ ClipSchema ], // should this be ids or embedded documents?
+  players: [ UserSchema ],
 	gamename: String,
   status: {
     type: String,
@@ -163,25 +163,26 @@ app.get('/games', verifyUser, function(req, res) {
 
 // Game Creation and Joining
 
-app.post('/game', verifyUser, function(req, res) {
+app.get('/game/asdf', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
-	gameInstance.players.push(req.user._id);
+	//gameInstance.players.push(req.user._id);
 	gameInstance.gamename = req.params.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
 	query.limit(1);
 	query.skip(randGame()[0]);
 	query.exec(function (err, docs){
-		gameInstance.clips.push(docs[0]._id);
+		gameInstance.clips.push(docs[0]);
 		query.skip(randGame()[1]);
 		query.exec(function (err, docs){
-			gameInstance.clips.push(docs[0]._id);
+			gameInstance.clips.push(docs[0]);
 			query.skip(randGame()[2]);
 			query.exec(function (err, docs){
-				gameInstance.clips.push(docs[0]._id);
+				gameInstance.clips.push(docs[0]);
 					gameInstance.save(function(err){
 						if(!err){
+							console.log("game instance " + gameInstance._id);
 							res.redirect('/game/'+gameInstance._id);
 						}		
 					});	
@@ -191,8 +192,26 @@ app.post('/game', verifyUser, function(req, res) {
 });
 
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
-	console.log("game id : " + req.params.id);
-	console.log("user id : " + req.user._id);
+	console.log("inside /game/id");
+	var conditions = {_id: req.params.id}
+			, update = { $push: { players: req.user}}; 
+	Game.update(conditions, update, function(err, docs){
+		if(!err){
+			Game.find(conditions, function(err, doc){
+				res.send(JSON.stringify(doc[0]));
+					if(doc[0].players.length > 3){	
+						update = { $set: { status: 'inPorogress'}}; 
+						Game.update(conditions, update, function(err){
+							var channel = pusher.channel(conditions._id);
+							var data = "startGame";
+							var pusherEvent = "startGame";
+							channel.trigger(pusherEvent, data, function(err, request, response){
+							});
+						});
+				}
+			});	
+		}
+	});
   // TODO
 });
 
@@ -204,6 +223,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
+	
 });
 
 var randGame = function(){
