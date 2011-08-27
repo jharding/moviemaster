@@ -357,10 +357,9 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					break;
 				
 			}
-			var gameListChannel = pusher.channel("gameList");
-			var gameListIncrementEvent = "answerEvent";
-			//var gameListIncrementData = conditions;
-			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.body.question, result: result});
+			var gameAnswerChannel = pusher.channel(req.params.id);
+			var gameAnswerEvent = "answerEvent";
+			gameAnswerChannel.trigger(gameAnswerEvent, {userId: req.user._id, question: req.body.question, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
 			}
