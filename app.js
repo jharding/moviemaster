@@ -25,7 +25,7 @@ var pusher = new Pusher({
 var ClipSchema = new Schema({
   title: String,
   year: Number,
-  director: String, // could be an array
+  directors: [ String ], // could be an array
   actors: [ String ],
   url: String
 });
@@ -217,8 +217,117 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 
 // Game API
 
-app.post('/game/:id/answer', verifyUser, function(req, res) {
-  // TODO
+
+function levenshtein(str1, str2) {
+    var l1 = str1.length, l2 = str2.length;
+    if (Math.min(l1, l2) === 0) {
+        return Math.max(l1, l2);
+    }
+    var i = 0, j = 0, d = [];
+    for (i = 0 ; i <= l1 ; i++) {
+        d[i] = [];
+        d[i][0] = i;
+    }
+    for (j = 0 ; j <= l2 ; j++) {
+        d[0][j] = j;
+    }
+    for (i = 1 ; i <= l1 ; i++) {
+        for (j = 1 ; j <= l2 ; j++) {
+            d[i][j] = Math.min(
+                d[i - 1][j] + 1,
+                d[i][j - 1] + 1, 
+                d[i - 1][j - 1] + (str1.charAt(i - 1) === str2.charAt(j - 1) ? 0 : 1)
+            );
+        }
+    }
+    return d[l1][l2];
+}
+
+app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
+	
+	
+	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
+		
+		if (!err) {
+			console.log("aaaaaaaa");
+			console.log(doc);
+			var result;
+			switch(req.params.question) {
+				case "title": 
+					
+					var userTitle = 
+						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+					var answerTitle = 
+						doc.title.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+					console.log(userTitle);
+					console.log(answerTitle);
+					
+					if (userTitle == answerTitle) {
+						result = 'right';
+					}
+					else {
+						result = 'wrong';
+					}
+					req.send({userId: req.user._id, question: req.params.question, result: result});
+					break;
+				case "year": 
+					
+					if (req.params.answer == doc.year) {
+						result = 'right';
+					}
+					else {
+						result = 'wrong';
+					}
+					
+					break;
+				case "director": 
+					var userDirector = 
+						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+					for (var i = 0; i < doc.directors.length; i++) {
+						var answerDirector = 
+							doc.directors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						//console.log(userDirector);
+						//console.log(answerDirector);
+						if (levenshtein(userDirector, answerDirector) < (answerDirector.length * 0.20)) {
+							result = 'right';
+						}
+						else {
+							result = 'wrong';
+						}
+						
+					}
+					break;
+				case "actor": 
+					var userActor = 
+						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+					for (var i = 0; i < doc.actors.length; i++) {
+						var answerActor = 
+							doc.actors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						//console.log(userDirector);
+						//console.log(answerDirector);
+						if (levenshtein(userActor, answerActor) < (answerActor.length * 0.20)) {
+							result = 'right';
+						}
+						else {
+							result = 'wrong';
+						}
+						
+					}
+					break;
+				default: 
+					
+					break;
+				
+			}
+			req.send({userId: req.user._id, question: req.params.question, result: result});
+		}
+		else {
+			res.send("a");
+		}
+	});
+	
+	
+	
 });
 
 app.del('game/:id', verifyUser, function(req, res) {
@@ -227,7 +336,8 @@ app.del('game/:id', verifyUser, function(req, res) {
 });
 
 var randGame = function(){
-	var count = 3;
+
+	var count = 4;
 	gameArray = [];
 	var rand1 = Math.floor(Math.random()*count);
 	var rand2 = Math.floor(Math.random()*count);
