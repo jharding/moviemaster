@@ -157,7 +157,16 @@ app.get('/games', verifyUser, function(req, res) {
   // TODO
 	var query = Game.find({status:'waiting'});
 	query.exec(function (err, docs){
-		res.send(JSON.stringify(docs.length));	
+		//res.send(JSON.stringify(docs.length));	
+		var responseJson = [];
+		for(var i in docs){
+			responseJson[i] = {
+				gameName: docs[i].gamename,
+				id: docs[i]._id,
+				numPlayers: docs[i].players.length  
+		    };
+        }
+		res.send(responseJson);
 	});
 });
 
@@ -167,7 +176,9 @@ app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
 	//gameInstance.players.push(req.user._id);
-	gameInstance.gamename = req.params.gameName;
+             console.log("wtf");
+             console.log(req.body.gameName);
+	gameInstance.gamename = req.body.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
 	query.limit(1);
@@ -192,7 +203,6 @@ app.post('/game', verifyUser, function(req, res) {
 });
 
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
-	console.log("inside /game/id");
 	var conditions = {_id: req.params.id}
 			, update = { $push: { players: req.user}}; 
 	Game.update(conditions, update, function(err, docs){
@@ -207,7 +217,18 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 							var pusherEvent = "startGame";
 							channel.trigger(pusherEvent, data, function(err, request, response){
 							});
+							var gameListChannel = pusher.channel("gameList");
+							var gameListInactiveEvent = "markInactiveEvent";
+							var gameListInactiveData = conditions;	
+							gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
+							});
 						});
+				}else{
+					var gameListChannel = pusher.channel("gameList");
+					var gameListIncrementEvent = "incrementEvent";
+					var gameListIncrementData = conditions;
+					gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
+					});
 				}
 			});	
 		}
@@ -332,7 +353,11 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
-  var conditions = {_id: req.params.id};
+  // var conditions = {_id: req.params.id}
+  //   ,	update = {$set, {status: 'finished'}};
+  //   Game.update(conditions, update, function(err){
+  //   	//pusher sends game over signal
+  //   }); 
 });
 
 var randGame = function(){
