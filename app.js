@@ -270,8 +270,6 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
 		
 		if (!err) {
-			console.log("aaaaaaaa");
-			console.log(doc);
 			var result;
 			switch(req.params.question) {
 				case "title": 
@@ -283,7 +281,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					console.log(userTitle);
 					console.log(answerTitle);
 					
-					if (userTitle == answerTitle) {
+					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.20)) {
 						result = 'right';
 					}
 					else {
@@ -336,14 +334,21 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					}
 					break;
 				default: 
-					
+					//TODO
 					break;
 				
 			}
-			req.send({userId: req.user._id, question: req.params.question, result: result});
+			var gameListChannel = pusher.channel("gameList");
+			var gameListIncrementEvent = "answerEvent";
+			//var gameListIncrementData = conditions;
+			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.params.question, result: result});
+			if (result == 'right') {
+				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+			}
+			res.send();
 		}
 		else {
-			res.send("a");
+			//TODO
 		}
 	});
 	
