@@ -10,9 +10,11 @@ section#game
 
   div.row
     div.offset5.span6.offset5#question-prompt
-      form(method='post', action='/game/{{ gameId }}/answer').form-stacked
+      form(method='post', action='answer').form-stacked
         label Get ready...
-        input(type='text', name='answer', id='answer', disabled)
+        input(type='text', name='answer', id='question-answer')
+        input(type='hidden', name='clipId', id='question-clip-id')
+        input(type='hidden', name='question', id='question-type')
         div.actions
           button(type='submit', class='btn primary') Submit
 
@@ -23,7 +25,7 @@ script(id='user', type='text/html')
   p points: {{ points }}
 
 script(id='question', type='text/html')
-  p {{ question }}
+  p {{ shortText }}
 
 script(id='news-item', type='text/html')
   p {{ news }}
