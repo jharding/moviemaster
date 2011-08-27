@@ -191,7 +191,7 @@ app.post('/game', verifyUser, function(req, res) {
 					gameInstance.save(function(err){
 						if(!err){
 							console.log("game instance " + gameInstance._id);
-							res.redirect('/game/'+gameInstance._id);
+							res.redirect('/game/'+gameInstance._id+'/');
 							var gameListChannel = pusher.channel("gameList");
 							var gameListNewGameEvent = "newGameEvent";
 							var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
