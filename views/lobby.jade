@@ -1,1 +1,20 @@
-#{ user.fb.name.full }
+h1 Lobby
+
+div#gamesView
+  input(id="new-game", placeholder="Create new game", type="text")
+  ul#gamesList
+
+//ICanHaz Templates
+script(id="game", type="text/html")
+  div.gameRow
+    div.gameName {{gameName}}
+    div.gameNumPlayers ({{numPlayers}}/4)
+
+//bootstrap collection
+script
+  $(document).ready(function() {
+  var games = [{id:100, gameName:"first game", numPlayers:
+  1},{id:200, gameName:"second game", numPlayers: 2}];
+  App.gamesView.addAll(games);
+
+  });
