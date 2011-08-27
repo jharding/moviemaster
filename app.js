@@ -192,6 +192,12 @@ app.post('/game', verifyUser, function(req, res) {
 						if(!err){
 							console.log("game instance " + gameInstance._id);
 							res.redirect('/game/'+gameInstance._id);
+							var gameListChannel = pusher.channel("gameList");
+							var gameListNewGameEvent = "newGameEvent";
+							var gameListNewGameData = {gamename:req.body.gameName, id:gameInstance._id, numplayers:0};	
+							gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
+						});
+
 						}		
 					});	
 			});
