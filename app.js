@@ -270,11 +270,11 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 		
 		if (!err) {
 			var result;
-			switch(req.params.question) {
+			switch(req.body.question) {
 				case "title": 
 					
 					var userTitle = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					var answerTitle = 
 						doc.title.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					console.log(userTitle);
@@ -286,11 +286,11 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.params.question, result: result});
+					req.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
-					if (req.params.answer == doc.year) {
+					if (req.body.answer == doc.year) {
 						result = 'right';
 					}
 					else {
@@ -300,7 +300,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					break;
 				case "director": 
 					var userDirector = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					for (var i = 0; i < doc.directors.length; i++) {
 						var answerDirector = 
 							doc.directors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
@@ -317,7 +317,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					break;
 				case "actor": 
 					var userActor = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					for (var i = 0; i < doc.actors.length; i++) {
 						var answerActor = 
 							doc.actors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
@@ -340,7 +340,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 			var gameListChannel = pusher.channel("gameList");
 			var gameListIncrementEvent = "answerEvent";
 			//var gameListIncrementData = conditions;
-			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.params.question, result: result});
+			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.body.question, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
 			}
