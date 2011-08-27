@@ -1,0 +1,29 @@
+section#game
+  div.row#user-panel
+  
+  div.row
+    div.span4#question-list
+
+    div.span8#video-player
+
+    div.span4#news-feed
+
+  div.row
+    div.offset5.span6.offset5#question-prompt
+      form(method='post', action='/game/{{ gameId }}/answer').form-stacked
+        label Get ready...
+        input(type='text', name='answer', id='answer', disabled)
+        div.actions
+          button(type='submit', class='btn primary') Submit
+
+// !!! The mustache varibles I use here are just temporary, not sure what the names will actually be
+script(id='user', type='text/html')
+  img(src='http://graph.facebook.com/{{ facebookId }}/picture')
+  h3 {{ fullName }}
+  p points: {{ points }}
+
+script(id='question', type='text/html')
+  p {{ question }}
+
+script(id='news-item', type='text/html')
+  p {{ news }}
