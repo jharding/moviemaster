@@ -120,8 +120,8 @@ function verifyUser(req, res, next) {
 }
 
 function verifyGameOpening(req, res, next) {
-	var query = Game.count({_id:req.params.id, status: 'waiting'}, function(err, count){
-		if(count > 0){
+	var query = Game.find({_id:req.params.id, status: 'waiting'}, function(err, doc){
+		if(doc.length > 0 && doc[0].players.length < 4){
 			next();
 		}else{
 			res.send({"message":"invalid game or game has already started"});
