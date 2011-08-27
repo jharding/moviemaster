@@ -372,21 +372,12 @@ var randGame = function(){
 
 	var count = 4;
 	gameArray = [];
-	var rand1 = Math.floor(Math.random()*count);
-	var rand2 = Math.floor(Math.random()*count);
-	var rand3 = Math.floor(Math.random()*count);
-	while(rand1 == rand2){
-		rand2 = Math.floor(Math.random()*count); 
+	while(gameArray.length < 3){
+		rand = Math.floor(Math.random()*count);
+		if(gameArray.indexOf(rand) == -1){
+			gameArray.push(rand);
+		} 
 	}
-	while(rand1 == rand3){
-		rand3 = Math.floor(Math.random()*count);
-	}
-	while(rand2 == rand3){
-		rand3 = Math.floor(Math.random()*count);
-	}
-	gameArray[0] = rand1;
-	gameArray[1] = rand2;
-	gameArray[2] = rand3;
 	return gameArray;
 }
 
