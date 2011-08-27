@@ -146,6 +146,10 @@ app.get('/', verifyUser, function(req, res) {
 
 app.get('/games', verifyUser, function(req, res) {
   // TODO
+	var query = Game.find({status:'waiting'});
+	query.exec(function (err, docs){
+		res.send(JSON.stringify(docs.length));	
+	});
 });
 
 // Game Creation and Joining
