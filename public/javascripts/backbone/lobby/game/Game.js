@@ -4,7 +4,12 @@ var Game = Backbone.Model.extend({
           numPlayers:1
       };
     },
+                                     
     url: function() {
         return "/game/" + this.id + "/";
+    },
+    
+    remove: function() {
+        this.trigger("remove");
     }
 });

@@ -13,11 +13,23 @@ script(id="game", type="text/html")
 //bootstrap collection
 script
   $(document).ready(function() {
+  
   $.get('/games', function(data) {
        App.gamesView.addAll(data);
   });
-  // var games = [{id:100, gameName:"first game", numPlayers:
-  // 1},{id:200, gameName:"second game", numPlayers: 2}];
-  // App.gamesView.addAll(games);
-
-  });
+  
+  var pusher = new Pusher('f6cbbef2da8723374cb3');
+  var channel = pusher.subscribe('gameList');
+  channel.bind('incrementEvent', function(conditions) {
+    var gameId = conditions._id;
+    var gameModel = App.games.get(gameId);
+    if (gameModel) {
+       var currentPlayers = gameModel.get("numPlayers");
+       gameModel.set({numPlayers: currentPlayers+1});
+    }
+    });
+    channel.bind('markInactiveEvent', function(conditions) {
+      var gameModel = App.games.get(conditions._id);
+      App.gamesView.remove(gameModel);
+    });
+    });
