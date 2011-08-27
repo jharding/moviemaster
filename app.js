@@ -152,6 +152,27 @@ app.get('/games', verifyUser, function(req, res) {
 
 app.post('/game', verifyUser, function(req, res) {
   // TODO
+	var gameInstance = new Game();
+	gameInstance.players.push(req.user._id);
+	console.log(randGame());	
+	var query = Clip.find({});
+	query.limit(1);
+	query.skip(randGame()[0]);
+	query.exec(function (err, docs){
+		gameInstance.clips.push(docs[0]._id);
+		query.skip(randGame()[1]);
+		query.exec(function (err, docs){
+			gameInstance.clips.push(docs[0]._id);
+			query.skip(randGame()[2]);
+			query.exec(function (err, docs){
+				gameInstance.clips.push(docs[0]._id);
+					gameInstance.save(function(err){
+						if(!err){
+						}		
+					});	
+			});
+		});
+	}); 
 });
 
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
@@ -167,6 +188,27 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
 });
+
+var randGame = function(){
+	var count = 10;
+	gameArray = [];
+	var rand1 = Math.floor(Math.random()*count);
+	var rand2 = Math.floor(Math.random()*count);
+	var rand3 = Math.floor(Math.random()*count);
+	while(rand1 == rand2){
+		rand2 = Math.floor(Math.random()*count); 
+	}
+	while(rand1 == rand3){
+		rand3 = Math.floor(Math.random()*count);
+	}
+	while(rand2 == rand3){
+		rand3 = Math.floor(Math.random()*count);
+	}
+	gameArray[0] = rand1;
+	gameArray[1] = rand2;
+	gameArray[2] = rand3;
+	return gameArray;
+}
 
 mongooseAuth.helpExpress(app);
 
