@@ -164,7 +164,8 @@ app.get('/games', verifyUser, function(req, res) {
 				gamename: docs[i].gameName,
 				id: docs[i]._id,
 				numplayers: docs[i].players.length  
-		}
+		    };
+        }
 		res.send(responseJson);
 	});
 });
@@ -241,11 +242,11 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
-  var conditions = {_id: req.params.id}
-	,	update = {$set, {status: 'finished'}};
-	Game.update(conditions, update, function(err){
-		//pusher sends game over signal
-	}); 
+  // var conditions = {_id: req.params.id}
+  //   ,	update = {$set, {status: 'finished'}};
+  //   Game.update(conditions, update, function(err){
+  //   	//pusher sends game over signal
+  //   }); 
 });
 
 var randGame = function(){
