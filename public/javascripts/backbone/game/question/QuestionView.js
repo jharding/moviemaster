@@ -13,7 +13,8 @@ var QuestionView = Backbone.View.extend({
   },
 
   render: function() {
-    $(this.el).html(ich.question(this.model.toJSON())); 
+    $(this.el).html(ich.question(this.model.toJSON()));
+    $(this.el).addClass(this.model.get('questionType'));
     return this;
   },
 
@@ -22,6 +23,9 @@ var QuestionView = Backbone.View.extend({
   },
 
   giveQuestionFocus: function() {
+    if ($(this.el).hasClass('answered')) {
+      return;
+    }
     $('#question-list .question').removeClass('selected');
     $(this.el).addClass('selected');
 

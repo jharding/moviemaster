@@ -34,7 +34,7 @@ var ClipsView = Backbone.View.extend({
 
     var atts = { id: "clip" + index };
     var params = { allowScriptAccess: "always" };
-    swfobject.embedSWF(uri, 'clip' + index, "425", "356", "8", null, null, params, atts);
+    swfobject.embedSWF(uri, 'clip' + index, "460", "356", "8", null, null, params, atts);
 
   },
 
@@ -50,6 +50,7 @@ var ClipsView = Backbone.View.extend({
       this.collection.at(0).initializeQuestions();
       $('#clip' + videoIndex)[0].playVideo();
       videoIndex += 1;
+      $('#news-feed').prepend(ich.alert({ text: 'Starting round ' + videoIndex }));
     }
 
     else {
@@ -57,6 +58,9 @@ var ClipsView = Backbone.View.extend({
       this.collection.at(0).initializeQuestions();
       $('#clip' + videoIndex)[0].playVideo();
       videoIndex += 1;
+
+      $('#round').text('Round ' + videoIndex + ' of 3');
+      $('#news-feed').prepend(ich.alert({ text: 'Starting round ' + videoIndex }));
     }
   }
 });

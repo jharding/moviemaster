@@ -6,7 +6,15 @@ script(type='text/javascript')
 
 section#game
   div.row#user-panel
-  
+ 
+  div.row#section-titles
+    div.span4
+      h3 Questions Remaining
+    div.span8
+      h3#round Round 1 of 3
+    div.span4
+      h3 Activity Feed
+
   div.row
     div.span4#question-list
 
@@ -23,11 +31,11 @@ section#game
         input(type='text', name='answer', id='question-answer')
         input(type='hidden', name='clipId', id='question-clip-id')
         input(type='hidden', name='question', id='question-type')
-        div.actions
-          button(type='submit', class='btn primary') Submit
+        button(type='submit', class='btn primary') Submit
 
 // !!! The mustache varibles I use here are just temporary, not sure what the names will actually be
 script(id='user', type='text/html')
+  span.hidden.userId {{ userId }}
   img(src='http://graph.facebook.com/{{ facebookId }}/picture')
   h3 {{ displayName }}
   p points: {{ points }}
@@ -35,8 +43,16 @@ script(id='user', type='text/html')
 script(id='question', type='text/html')
   span {{ shortText }}
 
-script(id='news-item', type='text/html')
-  p {{ news }}
+script(id='news', type='text/html')
+  div.news-item.clearfix
+    img(src='http://graph.facebook.com/{{ facebookId }}/picture')
+    p +1 for 
+      span {{ answer }}
+      [{{ questionType }}]
+
+script(id='alert', type='text/html')
+  div.news-item.clearfix.alert
+    p {{ text }}
 
 // Bootstrap
 script(id='bootstrap-users', type='text/bootstrap')
