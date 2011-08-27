@@ -1,4 +1,4 @@
 node_modules
 public/stylesheets/style.css
 .lvimrc
-.swp
+*.swp
