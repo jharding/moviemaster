@@ -157,7 +157,15 @@ app.get('/games', verifyUser, function(req, res) {
   // TODO
 	var query = Game.find({status:'waiting'});
 	query.exec(function (err, docs){
-		res.send(JSON.stringify(docs.length));	
+		//res.send(JSON.stringify(docs.length));	
+		var responseJson = [];
+		for(var i in docs){
+			responseJson[i] = {
+				gamename: docs[i].gameName,
+				id: docs[i]._id,
+				numplayers: docs[i].players.length  
+		}
+		res.send(responseJson);
 	});
 });
 
@@ -192,7 +200,6 @@ app.post('/game', verifyUser, function(req, res) {
 });
 
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
-	console.log("inside /game/id");
 	var conditions = {_id: req.params.id}
 			, update = { $push: { players: req.user}}; 
 	Game.update(conditions, update, function(err, docs){
