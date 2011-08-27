@@ -207,7 +207,18 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 							var pusherEvent = "startGame";
 							channel.trigger(pusherEvent, data, function(err, request, response){
 							});
+							var gameListChannel = pusher.channel("gameList");
+							var gameListInactiveEvent = "markInactiveEvent";
+							var gameListInactiveData = conditions;	
+							gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
+							});
 						});
+				}else{
+					var gameListChannel = pusher.channel("gameList");
+					var gameListIncrementEvent = "incrementEvent";
+					var gameListIncrementData = conditions;
+					gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
+					});
 				}
 			});	
 		}
@@ -223,7 +234,11 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
-  var conditions = {_id: req.params.id};
+  var conditions = {_id: req.params.id}
+	,	update = {$set, {status: 'finished'}};
+	Game.update(conditions, update, function(err){
+		//pusher sends game over signal
+	}); 
 });
 
 var randGame = function(){

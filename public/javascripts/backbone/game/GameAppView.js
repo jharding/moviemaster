@@ -1,4 +1,4 @@
-var GameView = Backbone.View.extend({
+var GameAppView = Backbone.View.extend({
   
   initialize: function() {
     _.bindAll(this, 'render');
