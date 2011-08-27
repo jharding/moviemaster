@@ -202,27 +202,42 @@ app.post('/game', verifyUser, function(req, res) {
 app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 	var conditions = {_id: req.params.id}
 			, update = { $push: { players: req.user}}; 
-	Game.update(conditions, update, function(err, docs){
-		if(!err){
-			Game.find(conditions, function(err, doc){
-				res.render('game', doc[0]);
-					if(doc[0].players.length > 3){	
-						var gameListChannel = pusher.channel("gameList");
-						var gameListInactiveEvent = "markInactiveEvent";
-						var gameListInactiveData = conditions;	
-						gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
-					});
-				}else{
-					var gameListChannel = pusher.channel("gameList");
-					var gameListIncrementEvent = "incrementEvent";
-					var gameListIncrementData = conditions;
-					gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
-					});
-				}
-			});	
+	Game.find(conditions, function(err, docs){
+		var userArray = [];
+		var playersArray = docs[0].players;
+		for(var i=0; i< playersArray.length; i++){
+			userArray.push(playersArray[i]._id+"");
+			console.log("user array id element is : " + typeof playersArray[i]._id);
+		}	
+		console.log("user Array " + userArray);
+		console.log("request params: " + req.user._id);
+		console.log("request params type: " + typeof req.user._id);
+		if(userArray.indexOf(req.user._id) == -1){
+				Game.update(conditions, update, function(err, docs){
+					if(!err){
+						Game.find(conditions, function(err, doc){
+							res.render('game', doc[0]);
+								if(doc[0].players.length > 3){	
+									var gameListChannel = pusher.channel("gameList");
+									var gameListInactiveEvent = "markInactiveEvent";
+									var gameListInactiveData = conditions;	
+									gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
+								});
+							}else{
+								var gameListChannel = pusher.channel("gameList");
+								var gameListIncrementEvent = "incrementEvent";
+								var gameListIncrementData = conditions;
+								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
+								});
+							}
+						});	
+					}
+			});
+		}else{
+			res.render('game', docs[0]);
 		}
 	});
-  // TODO
+	  // TODO
 });
 
 // Game API
