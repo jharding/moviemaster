@@ -374,7 +374,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 	
 });
 
-app.del('game/:id', verifyUser, function(req, res) {
+app.del('/game/:id', verifyUser, function(req, res) {
   // TODO
   var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
   Game.update(conditions, update, function(err){
@@ -403,11 +403,17 @@ var randGame = function(){
 	return gameArray;
 }
 
-app.get('leaders/:count', verifyUser, function(req, res){
+app.get('/leaders/:count', verifyUser, function(req, res){
 	var count = 10;
-	if(!req.params.count){
+	if(req.params.count){
+		count = req.params.count;
 	}
-		
+	var leaderQuery = User.find({});
+	leaderQuery.sort({victories:-1});
+	leaderQuery.limit(count);
+	leaderQuery.exec(function(err, docs){
+		res.send(JSON.stringify(docs));
+	});		
 });
 mongooseAuth.helpExpress(app);
 
