@@ -284,30 +284,28 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
 		
 		if (!err) {
-			console.log("aaaaaaaa");
-			console.log(doc);
 			var result;
-			switch(req.params.question) {
+			switch(req.body.question) {
 				case "title": 
 					
 					var userTitle = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					var answerTitle = 
 						doc.title.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					console.log(userTitle);
 					console.log(answerTitle);
 					
-					if (userTitle == answerTitle) {
+					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.20)) {
 						result = 'right';
 					}
 					else {
 						result = 'wrong';
 					}
-					req.send({userId: req.user._id, question: req.params.question, result: result});
+					req.send({userId: req.user._id, question: req.body.question, result: result});
 					break;
 				case "year": 
 					
-					if (req.params.answer == doc.year) {
+					if (req.body.answer == doc.year) {
 						result = 'right';
 					}
 					else {
@@ -317,7 +315,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					break;
 				case "director": 
 					var userDirector = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					for (var i = 0; i < doc.directors.length; i++) {
 						var answerDirector = 
 							doc.directors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
@@ -334,7 +332,7 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					break;
 				case "actor": 
 					var userActor = 
-						req.params.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					for (var i = 0; i < doc.actors.length; i++) {
 						var answerActor = 
 							doc.actors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
@@ -350,14 +348,21 @@ app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
 					}
 					break;
 				default: 
-					
+					//TODO
 					break;
 				
 			}
-			req.send({userId: req.user._id, question: req.params.question, result: result});
+			var gameListChannel = pusher.channel("gameList");
+			var gameListIncrementEvent = "answerEvent";
+			//var gameListIncrementData = conditions;
+			gameListChannel.trigger(gameListIncrementEvent, {userId: req.user._id, question: req.body.question, result: result});
+			if (result == 'right') {
+				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+			}
+			res.send();
 		}
 		else {
-			res.send("a");
+			//TODO
 		}
 	});
 	
