@@ -283,10 +283,10 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		});
 	});
 });
-app.get('/game/:id/:clipId/:question/:answer', verifyUser, function(req, res) {
+app.post('/game/:id/answer', verifyUser, function(req, res) {	
+	var clipId = req.body.clipId;	
 	
-	
-	Clip.findOne({_id: req.params.clipId}, function(err, doc) {
+	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
 			var result;
