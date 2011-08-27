@@ -7,6 +7,8 @@ var GameAppView = Backbone.View.extend({
   initialize: function() {
     this.el = $('body')[0];
 
+    this.gameStarted = false;
+
     this.delegateEvents(this.events);
 
     _.bindAll(this, 'render', 'submitAnswer', 'startGame');
@@ -30,6 +32,11 @@ var GameAppView = Backbone.View.extend({
   },
 
   startGame: function() {
+    if (this.gameStarted) {
+      return;
+    }
+
+    this.gameStarted = true;
     this.clips.view.nextClip();
     videoLoop = setInterval('App.clips.view.nextClip()', 60000); 
   }
