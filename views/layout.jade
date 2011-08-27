@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title #{ title }
+    title Title
 
     // Stylesheet
     link(rel='stylesheet', href='/stylesheets/style.css')
@@ -17,6 +17,7 @@ html
     script(type='text/javascript', src='/javascripts/lib/mustache.js')
     script(type='text/javascript', src='/javascripts/lib/pusher.js')
     script(type='text/javascript', src='/javascripts/lib/backpusher.js')
+    script(type='text/javascript', src='/javascripts/lib/swfobject.js')
 
     // Backbone - Lobby
     script(type='text/javascript', src='/javascripts/backbone/lobby/LobbyView.js')
@@ -39,6 +40,8 @@ html
     script(type='text/javascript', src='/javascripts/backbone/game/user/UserView.js')
     script(type='text/javascript', src='/javascripts/backbone/game/users/Users.js')
     script(type='text/javascript', src='/javascripts/backbone/game/users/UsersView.js')
+
+    script(type='text/javascript', src='/javascripts/main.js')
 
   body
     include includes/header

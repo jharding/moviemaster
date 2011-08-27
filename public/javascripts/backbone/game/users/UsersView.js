@@ -1,34 +1,26 @@
 var UsersView = Backbone.View.extend({
-	el: $('#user-panel'), 
-	events: {
-		'click #add': 'refresh'
-	}, 
-	initialize: function(){
-		_.bindAll(this, 'render', 'unrender', 'swap', 'remove');
-		this.collection = new Users();
-		this.collection.bind('change', this.refresh);
-		this.counter = 0;
-		this.render();
+	
+  initialize: function(){
+    this.el = $('#user-panel')[0];
+    
+    _.bindAll(this, 'render', 'unrender', 'appendUser');
+
+    this.collection.bind('add', this.appendUser, this);
+    this.collection.bind('reset', this.render, this);
 	}, 
 	
 	render: function () {
-		
-		$(this.el).append("<button id='add'>Add list item</button>");
-		
-		
-	}, 
+	  _(this.collection.models).each(function(user) {
+      this.appendUser(user);  
+    }, this);
+  }, 
 	
-	refresh: function () {
-		this.counter++;
-		
-		
-		var user = new User();
-		user.set({firstname: 'a', lastname: 'b', score: 1});
-		
-		this.collection.add(user);
-	}
+  unrender: function() {
+    $(this.el).remove();
+  },
+
+  appendUser: function(user) {
+    $(this.el).append(user.view.render().el);
+  }
 	
-	
-});
-var usersView = new UsersView();
 });

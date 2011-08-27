@@ -198,7 +198,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 	Game.update(conditions, update, function(err, docs){
 		if(!err){
 			Game.find(conditions, function(err, doc){
-				res.send(JSON.stringify(doc[0]));
+				res.render('game', doc[0]);
 					if(doc[0].players.length > 3){	
 						update = { $set: { status: 'inPorogress'}}; 
 						Game.update(conditions, update, function(err){
@@ -223,12 +223,11 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.del('game/:id', verifyUser, function(req, res) {
   // TODO
-	var conditions = {_id: req.params.id};
-	
+  var conditions = {_id: req.params.id};
 });
 
 var randGame = function(){
-	var count = 10;
+	var count = 3;
 	gameArray = [];
 	var rand1 = Math.floor(Math.random()*count);
 	var rand2 = Math.floor(Math.random()*count);
