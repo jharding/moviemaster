@@ -359,7 +359,11 @@ app.del('game/:id', verifyUser, function(req, res) {
 			var userConditions = {_id: req.user._id},
 					userUpdate={$inc: {victories: 1}};
 			User.update(userConditions, update, function(err){
-				
+				var channel = pusher.channel(conditions._id);
+				var endGameData = "endGame";
+				var pusherEndGameEvent = "endGame";
+				channel.trigger(pusherEndGameEvent, endGameData, function(err, request, response){
+				});
 			});	
   }); 
 });
