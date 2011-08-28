@@ -482,7 +482,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 		}
 		else {
-			//TODO
+			console.log(err);
 		}
 		
 		
