@@ -306,7 +306,7 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 			var channel = pusher.channel(req.params.id);
 			var pusherEvent = "startGame";
 			var data = docs[0].players;
-			for(var j = 0; j < responseDoc.players.length; j++){
+			for(var j = 0; j < data.length; j++){
 					data[j].userPosition = j; 			
 			}
 			channel.trigger(pusherEvent, data, function(err, request, response){
