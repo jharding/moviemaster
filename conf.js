@@ -1,12 +1,12 @@
 module.exports = {
   server: {
-    hostname: 'http://nko2-nodemaster.herokuapp.com',
-    port: parseInt(process.env.PORT) || '3000'
+    hostname: 'http://72.14.190.56:3000/',
+    port: '3000'
   },
 
   facebook: {
-    appId: '226763350709549',
-    appSecret: 'c182fea1b883f29751007beef5894591',
+    appId: '109430082493621',
+    appSecret: '8bcce5272ddcfc49a8a42b15b94946d3',
     redirect: '/'
   },
 

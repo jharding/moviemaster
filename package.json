@@ -10,6 +10,7 @@
     "mongoose-auth": "0.0.11",
     "pusher": "0.0.2",
     "underscore": ">= 0.0.1",
-    "nko": "~0.1.0"
+    "nko": "~0.1.0",
+		"connect-redis: ">= 1.0.0
   }
 }
