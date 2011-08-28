@@ -1,6 +1,6 @@
 module.exports = {
   server: {
-    hostname: 'http://localhost:3000',
+    hostname: 'http://72.14.190.56:3000',
     port: '3000'
   },
 
