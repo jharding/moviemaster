@@ -43,6 +43,10 @@ var ClipsView = Backbone.View.extend({
       this.collection.at(0).destroy();
       clearInterval(videoLoop);
 
+      this.collection.users.view.sendGameSummary();
+
+      $('#news-feed').prepend(ich.alert({ text: 'Game over' }));
+      $('#question-prompt').remove();
     }
 
     else if (videoIndex === 0) {

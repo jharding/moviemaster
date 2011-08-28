@@ -480,7 +480,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 	
 });
 
-app.del('/game/:id', verifyUser, function(req, res) {
+app.post('/game/:id/end', verifyUser, function(req, res) {
   // TODO
   var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
   Game.update(conditions, update, function(err){
@@ -494,7 +494,9 @@ app.del('/game/:id', verifyUser, function(req, res) {
 				channel.trigger(pusherEndGameEvent, endGameData, function(err, request, response){
 				});
 			});	
-  }); 
+  });
+
+  res.send();
 });
 
 var randGame = function(){

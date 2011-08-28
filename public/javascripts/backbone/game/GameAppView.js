@@ -16,6 +16,8 @@ var GameAppView = Backbone.View.extend({
     this.users = new Users();
     this.clips = new Clips();
 
+    this.clips.users = this.users;
+
     channel.bind('startGame', this.startGame, this);
     channel.bind('answerEvent', this.updateGame, this);
   },
@@ -71,6 +73,7 @@ var GameAppView = Backbone.View.extend({
     var questionType = data.question;
     var result = data.result;
     this.userToUpdate = data.userId;
+    var answer = data.answer;
 
     var user = this.users.find(function(user) {
       return user.get('_id') === this.userToUpdate;
@@ -106,10 +109,11 @@ var GameAppView = Backbone.View.extend({
       }
 
       user.set({ points: user.get('points') + 1 });
+
       fb = user.get('fb');
       var position = 1;
 
-      news = ich.news({ answer: 'temp', facebookId: fb.id, questionType: questionType });
+      news = ich.news({ answer: answer, facebookId: fb.id, questionType: questionType });
       $(news).addClass('user' + position);
 
       $('#news-feed').prepend(news);

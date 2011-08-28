@@ -3,7 +3,7 @@ var UsersView = Backbone.View.extend({
   initialize: function(){
     this.el = $('#user-panel')[0];
     
-    _.bindAll(this, 'render', 'unrender', 'appendUser', 'checkGameStatus', 'refreshUsers');
+    _.bindAll(this, 'render', 'unrender', 'appendUser', 'checkGameStatus', 'refreshUsers', 'sendGameSummary');
 
     this.collection.bind('add', this.appendUser, this);
     this.collection.bind('reset', this.render, this);
@@ -35,5 +35,24 @@ var UsersView = Backbone.View.extend({
   refreshUsers: function(users) {
     $(this.el).empty();
     this.collection.reset(users);
+  },
+
+  sendGameSummary: function() {
+    var finishingOrder = this.collection.sortBy(function(user) {
+      return -user.get('points');
+    });
+
+    var winner = finishingOrder[0];
+
+    if (winner.get('_id') === $('#user-id').val()) {
+      var url = 'end';
+      $.post(url);
+
+      $('#video-player').html(ich.winner({ displayName: winner.get('fb').name.full }));
+    }
+
+    else {
+      $('#video-player').html(ich.loser());
+    }
   }
 });
