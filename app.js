@@ -181,7 +181,6 @@ app.post('/game', verifyUser, function(req, res) {
   // TODO
 	var gameInstance = new Game();
 	gameInstance.gamename = req.body.gameName;
-	console.log(randGame());	
 	var query = Clip.find({});
 	var randGame = randGame();
 	query.limit(1);
