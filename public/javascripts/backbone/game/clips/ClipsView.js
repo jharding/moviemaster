@@ -34,7 +34,7 @@ var ClipsView = Backbone.View.extend({
 
     var atts = { id: "clip" + index };
     var params = { allowScriptAccess: "always" };
-    swfobject.embedSWF(uri, 'clip' + index, "460", "356", "8", null, null, params, atts);
+    swfobject.embedSWF(uri, 'clip' + index, "460", "356", "8", null, { allownetworking: 'internal' }, params, atts);
 
   },
 
