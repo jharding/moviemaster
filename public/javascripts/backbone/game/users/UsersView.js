@@ -5,14 +5,18 @@ var UsersView = Backbone.View.extend({
 
     this.gameStarted = false;
     
-    _.bindAll(this, 'render', 'unrender', 'appendUser', 'checkGameStatus', 'refreshUsers', 'sendGameSummary');
+    _.bindAll(this, 'render', 'unrender', 'appendUser', 'checkGameStatus', 'refreshUsers', 'sendGameSummary', 'appendStartButton', 'forceStart');
 
     this.collection.bind('add', this.appendUser, this);
     this.collection.bind('reset', this.render, this);
     this.collection.bind('reset', this.checkGameStatus, this);
 
+    $('#force-start-form').live('submit', this.forceStart, this);
+
     channel.bind('newUsers', this.refreshUsers, this);
     channel.bind('startGame', this.refreshUsers, this);
+
+    setTimeout('App.users.view.appendStartButton()', 10000);
 	}, 
 	
 	render: function () {
@@ -58,5 +62,14 @@ var UsersView = Backbone.View.extend({
     else {
       $('#video-player').html(ich.loser());
     }
+  },
+
+  appendStartButton: function() {
+    $('#video-player .waiting').append(ich.forceStart());
+  },
+
+  forceStart: function(event) {
+    event.preventDefault();
+    $.post('start');
   }
 });
