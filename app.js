@@ -167,6 +167,7 @@ app.get('/', verifyUser, function(req, res) {
         leaders: scoreBoard 
       });
 		 }else {
+			var scoreBoard = {topVictories: [], topPoints: []};
       res.render('lobby', {
         title: 'Lobby',
         leaders: {}
