@@ -204,7 +204,9 @@ app.post('/game', verifyUser, function(req, res) {
 						// 	gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
 						// });
 
-						}		
+						}else{
+							console.log("game instance is fucked up !");
+						}
 					});	
 			});
 		});
