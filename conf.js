@@ -1,7 +1,7 @@
 module.exports = {
   server: {
-    hostname: 'http://72.14.190.56:3000/',
-    port: '3000'
+    hostname: 'http://72.14.190.56',
+    port: '80'
   },
 
   facebook: {
