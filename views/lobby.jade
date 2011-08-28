@@ -1,21 +1,32 @@
-h1 Lobby
+section#lobby
+  div.row
+    div.span9
+      div#game-management
+        form(id="newGameForm", action="/game", method="post")
+          input(id="new-game",  placeholder="Enter game name...", type="text", name="gameName")
+          button(type='submit', class='btn primary') Create New Game
+        div#games-available
 
-div#gamesView
-  form(id="newGameForm", action="/game", method="post")
-    input(id="new-game", class="xlarge", placeholder="Create new game", type="text", name="gameName")
-  table#gamesTable.zebra-striped
-    thead
-      tr
-        th Game Name
-        th Players
-        th # of Players
-    tbody#gamesList
+    div.offset1.span6
+      div#leaderboards
+        div#wins-list
+          - var i = 1
+          - leaders.forEach(function(leader) {
+            div.row
+              span.place #{ i }.
+              img(src='http://graph.facebook.com/#{ leader.fb.id }/picture')
+              span.name #{ leader.fb.name.full } 
+              span.wins [#{ leader.victories }]
+              - i = i + 1
+          -})
+
 
 //ICanHaz Templates
 script(id="game", type="text/html")
-  td.gameName {{gameName}}
-  td.gamePlayers {{#fbIds}}<img src="http://graph.facebook.com/{{.}}/picture">{{/fbIds}}
-  td.gameNumPlayers {{numPlayers}}/4
+  span.game-name {{gameName}}
+  span
+    button(class='btn primary') Join
+  span.players {{#fbIds}}<img src="http://graph.facebook.com/{{.}}/picture">{{/fbIds}}
 
 //bootstrap collection
 script

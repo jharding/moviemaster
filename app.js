@@ -148,9 +148,30 @@ app.get('/logout', function(req, res) {
 // Lobby
 
 app.get('/', verifyUser, function(req, res) {
-  res.render('lobby', {
-    title: 'Lobby'
-  });
+	var count = 10;
+	console.log("called for score board");
+	if(req.params.count){
+		count = req.params.count;
+	}
+	var leaderQuery = User.find({});
+	leaderQuery.sort('victories', -1);
+	leaderQuery.limit(count);
+	leaderQuery.exec(function(err, docs){
+    if (!err) {
+      res.render('lobby', {
+        title: 'Lobby',
+        leaders: docs
+      });
+    }
+
+    else {
+      res.render('lobby', {
+        title: 'Lobby',
+        leaders: {}
+      });
+    }
+	});
+
 });
 
 // Lobby API

@@ -1,0 +1,81 @@
+#lobby {
+  #game-management {
+    background: #333;
+    padding: 15px 0;
+    .border-radius(5px);
+    .box-shadow();
+    form {
+      margin: 0 15px;
+      input {
+        margin: 0 15px 0 0;
+      }
+    }
+    #games-available {
+      margin: 15px 0 0 0;
+      .border-radius(5px);
+      .game-row {
+        padding: 8px 0;
+        border-bottom: 1px solid #333;
+        background: #f5f5f5;
+        margin: 0 15px;
+        cursor: pointer;
+        .game-name {
+          margin: 0 0 0 8px;
+          #font .sans-serif(normal, 16px, 24px);
+        }
+        .players {
+          float: right;
+          margin: 0 20px 0 0;
+          img {
+            border: 1px solid #333;
+            width: 30px;
+            margin: 0 5px 0 0;
+          }
+        }
+        .btn {
+          float: right;
+          margin: 0 8px 0 0;
+        }
+        &:hover {
+          background: #86C9EF;
+          color: #fff;
+        }
+      }
+    }
+  }
+  #leaderboards {
+    #wins-list {
+      .box-shadow();
+      .border-radius(5px);
+      background: #333;
+      padding: 15px 0;
+      .row {
+         padding: 8px 0;
+        border-bottom: 1px solid #333;
+        background: #f5f5f5;
+        margin: 0 15px;
+        cursor: pointer;
+        .place {  
+          margin: 0 0 0 8px;
+          #font .sans-serif(bold, 36px, 40px);
+        }
+        .wins {
+          #font .sans-serif(bold, 20px, 28px);
+          color: #67E46F;
+        }
+        img {
+          margin: 0 16px 0 8px;
+          width: 35px;
+        }
+        .name {
+          margin: 0 8px 0 0;
+          #font .sans-serif(normal, 20px, 28px);
+        }
+        &:hover {
+          background: #86C9EF;
+          color: #fff;
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,12 @@
 var GameView = Backbone.View.extend({
-    tagName: "tr",
+    tagName: "div",
     
     events:{
-        "dblclick" : "joinGame"
+        "dblclick" : "joinGame",
+        "click button": "joinGame"
     },
 
-    className: "gameLi",
+    className: "game-row clearfix",
 
     initialize: function() {
         var that = this;

@@ -1,5 +1,5 @@
 var GamesView = Backbone.View.extend({
-    el: 'div#gamesView',
+    el: 'section#lobby',
 
     events: {
         "keypress #new-game" :  "createOnEnter"
@@ -16,7 +16,7 @@ var GamesView = Backbone.View.extend({
     
     addOne: function(game) {
         var gameView = new GameView({model: game});
-        this.$("#gamesList").append(gameView.render().el);
+        this.$("#games-available").append(gameView.render().el);
     },
     
     addAll: function(gamesJSONArr) {
