@@ -44,22 +44,39 @@
     }
   }
   #leaderboards {
-    #wins-list {
+    #tabs {
+      margin: 0 0 0 15px;
+      .tab {
+        float: left;
+        .border-radius(5px 5px 0 0);
+        padding: 8px;
+        background: gray;
+        color: #fff;
+        cursor: pointer;
+        #font .sans-serif(normal, 18px, 24px);
+        &.selected {
+          background: #333;
+          font-weight: bold;
+        }
+      }
+    }
+    #wins-list, #points-list {
       .box-shadow();
       .border-radius(5px);
       background: #333;
       padding: 15px 0;
       .row {
-         padding: 8px 0;
+        padding: 8px 0;
         border-bottom: 1px solid #333;
         background: #f5f5f5;
         margin: 0 15px;
-        cursor: pointer;
         .place {  
           margin: 0 0 0 8px;
           #font .sans-serif(bold, 36px, 40px);
         }
         .wins {
+          float: right;
+          margin: 0 8px 0 0;
           #font .sans-serif(bold, 20px, 28px);
           color: #67E46F;
         }

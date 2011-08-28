@@ -253,6 +253,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 					if(!err){
 						Game.find(conditions, function(err, doc){
 								var responseDoc = doc[0];
+								responseDoc.title = responseDoc.gamename;
 								for(var j = 0; j < responseDoc.players.length; j++){
 									responseDoc.players[j].userPosition = j; 			
 								}
