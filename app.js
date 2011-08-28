@@ -229,8 +229,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 				Game.update(conditions, update, function(err, docs){
 					if(!err){
 						Game.find(conditions, function(err, doc){
-                                      console.log("doc[0] is " + doc[0]);
-							res.send(JSON.stringify(doc[0]));
+                            res.render('game', docs[0]);
 								if(doc[0].players.length > 3){	
 									var gameListChannel = pusher.channel("gameList");
 									var gameListInactiveEvent = "markInactiveEvent";
