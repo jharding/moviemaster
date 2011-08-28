@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./conf');
+var conf = require('./_conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -220,12 +220,11 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		var playersArray = docs[0].players;
 		for(var i=0; i< playersArray.length; i++){
 			userArray.push(playersArray[i]._id);
-			console.log("user array id element is : " + typeof playersArray[i]._id);
 		}	
 		console.log("user Array " + userArray);
 		console.log("request params: " + req.user._id);
 		console.log("request params type: " + typeof req.user._id);
-		if(userArray.indexOf(req.user._id) == -1){
+		if(userArray.indexOf(req.user._id+"") == -1){
 				Game.update(conditions, update, function(err){
 					if(!err){
 						Game.find(conditions, function(err, doc){
