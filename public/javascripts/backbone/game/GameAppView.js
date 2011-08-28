@@ -58,6 +58,8 @@ var GameAppView = Backbone.View.extend({
       $('#question-prompt form button').removeAttr('disabled');
     }).error(function() {
       $('#question-prompt form label').text('Oops an error occured. Try again.');
+      $('#question-prompt form input').removeAttr('disabled');
+      $('#question-prompt form button').removeAttr('disabled');
      });   
   },
 

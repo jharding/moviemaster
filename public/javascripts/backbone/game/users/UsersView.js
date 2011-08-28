@@ -2,6 +2,8 @@ var UsersView = Backbone.View.extend({
 	
   initialize: function(){
     this.el = $('#user-panel')[0];
+
+    this.gameStarted = false;
     
     _.bindAll(this, 'render', 'unrender', 'appendUser', 'checkGameStatus', 'refreshUsers', 'sendGameSummary');
 
@@ -28,7 +30,8 @@ var UsersView = Backbone.View.extend({
   },
   
   checkGameStatus: function() {
-    if (this.collection.models.length === 4) {
+    if (this.collection.models.length === 4 && !this.gameStarted) {
+      this.gameStarted = true;
       setTimeout("$.post('start')", 5000);
     }
   },
