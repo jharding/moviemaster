@@ -36,7 +36,7 @@ var GamesView = Backbone.View.extend({
     createOnEnter : function(e) {
         var text = this.input.val();
         if (!text || e.keyCode != 13) return;
-        $.post('/game', {gameName: text});
+        $('#newGameForm').submit();
     }
 });
 

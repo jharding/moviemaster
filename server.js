@@ -1,4 +1,4 @@
-
+require('nko')('Rjtuc6pfUq+RSg+b');
 /**
  * Module dependencies.
  */
@@ -7,6 +7,7 @@ var conf = require('./conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
+var und = require('underscore')._;
   Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 var ObjectIdCreate = mongoose.Types.ObjectId;
@@ -163,7 +164,10 @@ app.get('/games', verifyUser, function(req, res) {
 			responseJson[i] = {
 				gameName: docs[i].gamename,
 				id: docs[i]._id,
-				numPlayers: docs[i].players.length  
+				numPlayers: docs[i].players.length,
+                fbIds: und.map(docs[i].players, function(player){
+                                   return player.fb.id;
+                               })
 		    };
         }
 		res.send(responseJson);
@@ -191,12 +195,12 @@ app.post('/game', verifyUser, function(req, res) {
 					gameInstance.save(function(err){
 						if(!err){
 							console.log("game instance " + gameInstance._id);
-							res.redirect('/game/'+gameInstance._id);
-							var gameListChannel = pusher.channel("gameList");
-							var gameListNewGameEvent = "newGameEvent";
-							var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
-							gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
-						});
+							res.redirect('/game/'+gameInstance._id+'/');
+						// 	var gameListChannel = pusher.channel("gameList");
+						// 	var gameListNewGameEvent = "newGameEvent";
+						// 	var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
+						// 	gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
+						// });
 
 						}		
 					});	
@@ -232,7 +236,12 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 							}else{
 								var gameListChannel = pusher.channel("gameList");
 								var gameListIncrementEvent = "incrementEvent";
-								var gameListIncrementData = conditions;
+                                var gameListIncrementData = conditions;
+                                gameListIncrementData.id = conditions._id;
+                                gameListIncrementData.gameName = doc[0].gamename;
+								gameListIncrementData.fbIds = und.map(doc[0].players, function(player){
+                                   return player.fb.id;
+                               });
 								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
 								});
 							}
@@ -445,8 +454,13 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 			gameAnswerChannel.trigger("answerEvent", {userId: req.user._id, question: req.body.question, answer: answer, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+        res.send({ match: true });
 			}
-			res.send();
+
+      else {
+        res.send({ match: false });
+			}
+
 		}
 		else {
 			//TODO
