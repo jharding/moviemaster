@@ -1,8 +1,8 @@
 var GameView = Backbone.View.extend({
-    tagName: "li",
+    tagName: "tr",
     
     events:{
-        "dblclick div.gameRow" : "joinGame"
+        "dblclick" : "joinGame"
     },
 
     className: "gameLi",

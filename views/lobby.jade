@@ -1,14 +1,19 @@
 h1 Lobby
 
 div#gamesView
-  input(id="new-game", placeholder="Create new game", type="text")
-  ul#gamesList
+  form(id="newGameForm", action="/game", method="post")
+    input(id="new-game", class="xlarge", placeholder="Create new game", type="text", name="gameName")
+  table#gamesTable.zebra-striped
+    thead
+      tr
+        th Game Name
+        th # of Players
+    tbody#gamesList
 
 //ICanHaz Templates
 script(id="game", type="text/html")
-  div.gameRow
-    div.gameName {{gameName}}
-    div.gameNumPlayers ({{numPlayers}}/4)
+  td.gameName {{gameName}}
+  td.gameNumPlayers ({{numPlayers}}/4)
 
 //bootstrap collection
 script
@@ -17,6 +22,7 @@ script
   $.get('/games', function(data) {
        App.gamesView.addAll(data);
   });
+  //$("#gamesTable").tablesorter();
   
   var pusher = new Pusher('f6cbbef2da8723374cb3');
   var channel = pusher.subscribe('gameList');

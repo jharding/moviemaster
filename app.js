@@ -191,7 +191,7 @@ app.post('/game', verifyUser, function(req, res) {
 					gameInstance.save(function(err){
 						if(!err){
 							console.log("game instance " + gameInstance._id);
-							res.redirect('/game/'+gameInstance._id);
+							res.redirect('/game/'+gameInstance._id+'/');
 							var gameListChannel = pusher.channel("gameList");
 							var gameListNewGameEvent = "newGameEvent";
 							var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
@@ -373,8 +373,13 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 			gameAnswerChannel.trigger(gameAnswerEvent, {userId: req.user._id, question: req.body.question, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+        res.send({ match: true });
 			}
-			res.send();
+
+      else {
+        res.send({ match: false });
+			}
+
 		}
 		else {
 			//TODO

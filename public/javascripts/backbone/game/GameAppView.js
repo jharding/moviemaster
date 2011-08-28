@@ -37,14 +37,15 @@ var GameAppView = Backbone.View.extend({
       return;
     }
 
+    $('#question-prompt').show();
+    $('#section-titles').show();
+
     this.gameStarted = true;
     this.clips.view.nextClip();
     videoLoop = setInterval('App.clips.view.nextClip()', 60000); 
   },
 
   updateGame: function(data) {
-    alert(JSON.stringify(data));
-    /* 
     var questionType = data.question;
     var result = data.result;
     this.userToUpdate = data.userId;
@@ -54,8 +55,26 @@ var GameAppView = Backbone.View.extend({
     }, this);
 
     if (result === 'right') {
-      user.set('points', user.get('points') + 1);
+      $('#question-prompt form input').val('');
+      $('#question-prompt form label').text('Select a new question to answer!');
+      $('#question-list ' + questionType).remove();
+
+      if (questionType === 'actor') {
+        $($('#question-list .' + questionType)[0]).remove();
+      }
+
+      else {
+        $('#question-list .' + questionType).remove();
+      }
+
+      user.set({ points: user.get('points') + 1 });
+      fb = user.get('fb');
+      var position = 1;
+
+      news = ich.news({ answer: 'temp', facebookId: fb.id, questionType: questionType });
+      $(news).addClass('user' + position);
+
+      $('#news-feed').prepend(news);
     }
-    */
   }
 });

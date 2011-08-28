@@ -29,14 +29,31 @@ var Questions = Backbone.Collection.extend({
       answered: false
     };
 
-    var actorQuestion = {
+    var actor1Question = {
       clipId: clipId,
-      shortText: 'Actors',
+      shortText: 'Actor',
       longText: 'Who is an actor in this movie?',
       questionType: 'actor',
       answered: false
     };
 
-    this.reset([ titleQuestion, yearQuestion, directorQuestion, actorQuestion ]);    
+     var actor2Question = {
+      clipId: clipId,
+      shortText: 'Actor',
+      longText: 'Who is an actor in this movie?',
+      questionType: 'actor',
+      answered: false
+    };
+
+    var actor3Question = {
+      clipId: clipId,
+      shortText: 'Actor',
+      longText: 'Who is an actor in this movie?',
+      questionType: 'actor',
+      answered: false
+    };
+
+
+   this.reset([ titleQuestion, yearQuestion, directorQuestion, actor1Question, actor2Question, actor3Question ]);    
   }
 });
