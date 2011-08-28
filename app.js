@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./_conf');
+var conf = require('./conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
