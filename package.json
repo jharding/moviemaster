@@ -9,6 +9,7 @@
     "mongoose": "2.0.1",
     "mongoose-auth": "0.0.11",
     "pusher": "0.0.2",
+    "underscore": ">= 0.0.1",
     "nko": "~0.1.0"
   }
 }
