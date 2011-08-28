@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./conf');
+var conf = require('./_conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -76,7 +76,9 @@ var User = mongoose.model('User', UserSchema);
 mongoose.connect(conf.mongo.uri);
 
 var app = module.exports = express.createServer();
-
+var RedisStore = require('connect-redis')(express);
+app.use(express.cookieParser());
+app.use(express.session({ secret: "keyboard cat", store: new RedisStore}));
 // Configuration
 
 app.configure(function(){
