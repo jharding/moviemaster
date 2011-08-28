@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./conf');
+var conf = require('./_conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -305,7 +305,7 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 		Game.find(conditions, function(err, docs){
 			var channel = pusher.channel(req.params.id);
 			var pusherEvent = "startGame";
-			var data = doc[0].players;
+			var data = docs[0].players;
 			for(var j = 0; j < responseDoc.players.length; j++){
 					data[j].userPosition = j; 			
 			}
@@ -527,7 +527,7 @@ var randGame = function(){
 	return gameArray;
 }
 
-app.get('/leaders/:count', verifyUser, function(req, res){
+app.get('/leaders', verifyUser, function(req, res){
 	var count = 10;
 	if(req.params.count){
 		count = req.params.count;
