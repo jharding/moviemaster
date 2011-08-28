@@ -523,7 +523,9 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 
 app.post('/game/:id/end', verifyUser, function(req, res) {
   // TODO
-  var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
+  var conditions = {_id: req.params.id};	
+	//var update = {$set : {status: 'finished'}};
+	
   Game.remove(conditions, function(err){
 				  	//pusher sends game over signal
 			var userConditions = {_id: req.user._id},
