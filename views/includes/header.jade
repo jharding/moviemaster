@@ -2,3 +2,11 @@ header
   div.container
     a(href='/')
       h1 nodemaster
+     - if (user) 
+      div.user-managment
+        p
+          a(href='/logout') log out
+        p victories: 
+          span #{ user.victories }
+        p points: 
+          span #{ user.points }
