@@ -9,14 +9,27 @@ section#lobby
 
     div.offset1.span6
       div#leaderboards
+        div#tabs.clearfix
+          div#wins-tab.tab.selected Victories
+          div#points-tab.tab Points
         div#wins-list
           - var i = 1
-          - leaders.forEach(function(leader) {
+          - topVictories.forEach(function(leader) {
             div.row
               span.place #{ i }.
               img(src='http://graph.facebook.com/#{ leader.fb.id }/picture')
               span.name #{ leader.fb.name.full } 
               span.wins [#{ leader.victories }]
+              - i = i + 1
+          -})
+        div(style='display: none;')#points-list
+          - var i = 1
+          - topPoints.forEach(function(leader) {
+            div.row
+              span.place #{ i }.
+              img(src='http://graph.facebook.com/#{ leader.fb.id }/picture')
+              span.name #{ leader.fb.name.full } 
+              span.wins [#{ leader.points }]
               - i = i + 1
           -})
 
