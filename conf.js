@@ -5,13 +5,13 @@ module.exports = {
   },
 
   facebook: {
-    appId: '191626610902572',
-    appSecret: 'ef21744f430ff2c19788c6e5ea49794d',
+    appId: '226763350709549',
+    appSecret: 'c182fea1b883f29751007beef5894591',
     redirect: '/'
   },
 
   mongo: {
-    uri: 'mongodb://localhost/nodemaster-dev'
+    uri: 'mongodb://nodemaster:cisco123@staff.mongohq.com:10025/nodemaster'
   },
 
   pusher: {
