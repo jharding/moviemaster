@@ -98,7 +98,8 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler()); 
+
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 // Route Middleware
@@ -182,14 +183,15 @@ app.post('/game', verifyUser, function(req, res) {
 	gameInstance.gamename = req.body.gameName;
 	console.log(randGame());	
 	var query = Clip.find({});
+	var randGame = randGame();
 	query.limit(1);
-	query.skip(randGame()[0]);
+	query.skip(randGame[0]);
 	query.exec(function (err, docs){
 		gameInstance.clips.push(docs[0]);
-		query.skip(randGame()[1]);
+		query.skip(randGame[1]);
 		query.exec(function (err, docs){
 			gameInstance.clips.push(docs[0]);
-			query.skip(randGame()[2]);
+			query.skip(randGame[2]);
 			query.exec(function (err, docs){
 				gameInstance.clips.push(docs[0]);
 					gameInstance.save(function(err){
