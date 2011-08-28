@@ -29,11 +29,8 @@ script
   var pusher = new Pusher('f6cbbef2da8723374cb3');
   var channel = pusher.subscribe('gameList');
   channel.bind('incrementEvent', function(conditions) {
-    console.log("increment event");
-    console.log(conditions);
     var gameId = conditions.id;
     var gameModel = App.games.get(gameId);
-    console.log(gameModel);
     if (gameModel) {
        var currentPlayers = gameModel.get("numPlayers");
        gameModel.set({fbIds: conditions.fbIds});

@@ -237,8 +237,6 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 								var gameListChannel = pusher.channel("gameList");
 								var gameListIncrementEvent = "incrementEvent";
                                 var gameListIncrementData = conditions;
-                                console.log("zzz");
-                                console.log(doc[0].gamename);
                                 gameListIncrementData.id = conditions._id;
                                 gameListIncrementData.gameName = doc[0].gamename;
 								gameListIncrementData.fbIds = und.map(doc[0].players, function(player){
