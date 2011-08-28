@@ -7,6 +7,7 @@ var conf = require('./conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
+var und = require('underscore')._;
   Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 var ObjectIdCreate = mongoose.Types.ObjectId;
@@ -166,7 +167,10 @@ app.get('/games', verifyUser, function(req, res) {
 			responseJson[i] = {
 				gameName: docs[i].gamename,
 				id: docs[i]._id,
-				numPlayers: docs[i].players.length  
+				numPlayers: docs[i].players.length,
+                fbIds: und.map(docs[i].players, function(player){
+                                   return player.fb.id;
+                               })
 		    };
         }
 		res.send(responseJson);
@@ -196,11 +200,11 @@ app.post('/game', verifyUser, function(req, res) {
 						if(!err){
 							console.log("game instance " + gameInstance._id);
 							res.redirect('/game/'+gameInstance._id+'/');
-							var gameListChannel = pusher.channel("gameList");
-							var gameListNewGameEvent = "newGameEvent";
-							var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
-							gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
-						});
+						// 	var gameListChannel = pusher.channel("gameList");
+						// 	var gameListNewGameEvent = "newGameEvent";
+						// 	var gameListNewGameData = {gameName:req.body.gameName, id:gameInstance._id, numPlayers:0};	
+						// 	gameListChannel.trigger(gameListNewGameEvent, gameListNewGameData, function(err, request, response){
+						// });
 
 						}		
 					});	
@@ -236,7 +240,12 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 							}else{
 								var gameListChannel = pusher.channel("gameList");
 								var gameListIncrementEvent = "incrementEvent";
-								var gameListIncrementData = conditions;
+                                var gameListIncrementData = conditions;
+                                gameListIncrementData.id = conditions._id;
+                                gameListIncrementData.gameName = doc[0].gamename;
+								gameListIncrementData.fbIds = und.map(doc[0].players, function(player){
+                                   return player.fb.id;
+                               });
 								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
 								});
 							}
@@ -284,7 +293,7 @@ function levenshtein(str1, str2) {
 }
 app.post('/game/:id/start', verifyUser, function(req, res){
 	var conditions = {_id: req.params.id};
-	var update = { $set: { status: 'inPorogress'}}; 
+	var update = { $set: { status: 'inProgress'}}; 
 	Game.update(conditions, update, function(err){
 		var channel = pusher.channel(req.params.id);
 		var data = "startGame";
@@ -298,10 +307,60 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 app.post('/game/:id/answer', verifyUser, function(req, res) {
 	
 	var clipId = req.body.clipId;
+	var result = '';
+	var answer;
+	/* special case for question actor */
+	if (req.body.question == "actor") {
+		Game.findById(req.params.id, function(err, game) {
+			/* find clip index */
+			var clipIndex;
+			for (clipIndex = 0; clipIndex < game.clips.length; clipIndex++) {
+				if (game.clips[clipIndex]._id == req.body.clipId) {
+					console.log(clipIndex + "!!!!!!!!!!!!");
+					break;
+				}
+			}
+			
+			var userActor = 
+				req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+			for (var actorIndex = 0; actorIndex < game.clips[clipIndex].actors.length; actorIndex++) {
+				var answerActor = 
+					game.clips[clipIndex].actors[actorIndex].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
+				//console.log(userActor);
+				//console.log(answerActor);
+				if (levenshtein(userActor, answerActor) < (answerActor.length * 0.20)) {
+					result = 'right';
+					answer = game.clips[clipIndex].actors[actorIndex];
+					console.log(game.clips[clipIndex]);
+					game.clips[clipIndex].actors.splice(actorIndex, 1);
+					//game.clips[1].remove();
+					console.log(game.clips[clipIndex]);
+					game.save(function (err) {if(err) console.log(err)});
+					break;
+				}
+				else {
+					result = 'wrong';
+					answer = '';
+				}
+				//console.log(levenshtein(userActor, answerActor));
+				//console.log(answerActor.length * 0.20);
+			}
+			console.log(result);
+			var gameAnswerChannel = pusher.channel(req.params.id);
+			gameAnswerChannel.trigger("answerEvent", {userId: req.user._id, question: req.body.question, answer: answer, result: result});
+			if (result == 'right') {
+				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+			}
+			res.send();
+		});
+		
+	}
+	else {
+	
 	Clip.findOne({_id: clipId}, function(err, doc) {
 		
 		if (!err) {
-			var result;
+			
 			switch(req.body.question) {
 				case "title": 
 					
@@ -309,11 +368,12 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					var answerTitle = 
 						doc.title.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
-					console.log(userTitle);
-					console.log(answerTitle);
+					//console.log(userTitle);
+					//console.log(answerTitle);
 					
 					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.20)) {
 						result = 'right';
+						answer = doc.title;
 						break;
 					}
 					else {
@@ -324,6 +384,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					
 					if (req.body.answer == doc.year) {
 						result = 'right';
+						answer = doc.year;
 					}
 					else {
 						result = 'wrong';
@@ -340,31 +401,52 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 						//console.log(answerDirector);
 						if (levenshtein(userDirector, answerDirector) < (answerDirector.length * 0.20)) {
 							result = 'right';
+							answer = doc.directors[i];
 							break;
 						}
 						else {
 							result = 'wrong';
+							answer = '';
 						}
 						
 					}
 					break;
-				case "actor": 
+				case "actor": //not using it for now
 					var userActor = 
 						req.body.answer.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
 					for (var i = 0; i < doc.actors.length; i++) {
 						var answerActor = 
 							doc.actors[i].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").toLowerCase();
-						console.log(userActor);
-						console.log(answerActor);
+						//console.log(userActor);
+						//console.log(answerActor);
 						if (levenshtein(userActor, answerActor) < (answerActor.length * 0.20)) {
 							result = 'right';
+							answer = doc.actors[i];
+							
+							
+							Game.findById(req.params.id, function(err, game) {
+								//console.log(doc.clips[i]);
+								var j;
+								for (j = 0; j < game.clips.length; j++) {
+									if (game.clips[j]._id == req.body.clipId) {
+										console.log(j + "!!!!!!!!!!!!");
+										break;
+									}
+								}
+								console.log(game.clips[j]);
+								game.clips[j].actors.splice(i, 1);
+								//game.clips[1].remove();
+								console.log(game.clips[j]);
+								game.save(function (err) {if(err) console.log(err)});
+							});
 							break;
 						}
 						else {
 							result = 'wrong';
+							answer = '';
 						}
-						console.log(levenshtein(userActor, answerActor));
-						console.log(answerActor.length * 0.20);
+						//console.log(levenshtein(userActor, answerActor));
+						//console.log(answerActor.length * 0.20);
 					}
 					break;
 				default: 
@@ -373,8 +455,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 				
 			}
 			var gameAnswerChannel = pusher.channel(req.params.id);
-			var gameAnswerEvent = "answerEvent";
-			gameAnswerChannel.trigger(gameAnswerEvent, {userId: req.user._id, question: req.body.question, result: result});
+			gameAnswerChannel.trigger("answerEvent", {userId: req.user._id, question: req.body.question, answer: answer, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
         res.send({ match: true });
@@ -388,7 +469,12 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 		else {
 			//TODO
 		}
+		
+		
 	});
+	}
+	
+	
 	
 	
 	

@@ -25,12 +25,12 @@ section#game
     div.span4#news-feed
 
   div.row
-    div.offset5.span6.offset5#question-prompt
+    div.offset4.span8.offset4#question-prompt
       form(method='post', action='answer').form-stacked
-        label Get ready...
+        label Select a new question to answer!
         input(type='text', name='answer', id='question-answer')
         input(type='hidden', name='clipId', id='question-clip-id')
-        input(type='hidden', name='question', id='question-type')
+        input(type='hidden', name='question', id='question-type', value='')
         button(type='submit', class='btn primary') Submit
 
 // !!! The mustache varibles I use here are just temporary, not sure what the names will actually be

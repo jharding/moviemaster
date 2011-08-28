@@ -7,13 +7,15 @@ div#gamesView
     thead
       tr
         th Game Name
+        th Players
         th # of Players
     tbody#gamesList
 
 //ICanHaz Templates
 script(id="game", type="text/html")
   td.gameName {{gameName}}
-  td.gameNumPlayers ({{numPlayers}}/4)
+  td.gamePlayers {{#fbIds}}<img src="http://graph.facebook.com/{{.}}/picture">{{/fbIds}}
+  td.gameNumPlayers {{numPlayers}}/4
 
 //bootstrap collection
 script
@@ -27,19 +29,27 @@ script
   var pusher = new Pusher('f6cbbef2da8723374cb3');
   var channel = pusher.subscribe('gameList');
   channel.bind('incrementEvent', function(conditions) {
-    var gameId = conditions._id;
+    var gameId = conditions.id;
     var gameModel = App.games.get(gameId);
     if (gameModel) {
        var currentPlayers = gameModel.get("numPlayers");
+       gameModel.set({fbIds: conditions.fbIds});
        gameModel.set({numPlayers: currentPlayers+1});
+    } else {
+      var gameModel = new Game(conditions);
+      App.games.add(gameModel);
+      App.gamesView.addOne(gameModel);
     }
     });
     channel.bind('markInactiveEvent', function(conditions) {
       var gameModel = App.games.get(conditions._id);
-      App.gamesView.remove(gameModel);
+      if (gameModel) {
+         App.gamesView.remove(gameModel);
+      }
     });
-    channel.bind('newGameEvent', function(conditions) {
-      var gameModel = new Game(conditions);
-      App.gamesView.addOne(gameModel);
-    });
+    // channel.bind('newGameEvent', function(conditions) {
+    //   console.log("new game event");
+    //   var gameModel = new Game(conditions);
+    //   App.gamesView.addOne(gameModel);
+    // });
     });
