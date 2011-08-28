@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./conf');
+var conf = require('./_conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -149,29 +149,31 @@ app.get('/logout', function(req, res) {
 
 app.get('/', verifyUser, function(req, res) {
 	var count = 10;
-	console.log("called for score board");
 	if(req.params.count){
 		count = req.params.count;
 	}
-	var leaderQuery = User.find({});
-	leaderQuery.sort('victories', -1);
-	leaderQuery.limit(count);
-	leaderQuery.exec(function(err, docs){
-    if (!err) {
-      res.render('lobby', {
+	var leaderQueryByVic = User.find({});
+	leaderQueryByVic.sort('victories', -1);
+	leaderQueryByVic.limit(count);
+	leaderQueryByVic.exec(function(err, vics){
+		leaderQueryByPoints = User.find({});
+		leaderQueryByPoints.sort('points', -1);
+		leaderQueryByPoints.limit(count);
+		leaderQueryByPoints.exec(function(err, points){
+			var scoreBoard = {topVictories: vics, topPoints:points}; 
+			if (!err) {
+				res.render('lobby', {
         title: 'Lobby',
-        leaders: docs
+        leaders: scoreBoard 
       });
-    }
-
-    else {
+		 }else {
       res.render('lobby', {
         title: 'Lobby',
         leaders: {}
       });
-    }
-	});
-
+		 }
+		});
+   });
 });
 
 // Lobby API
@@ -552,10 +554,10 @@ app.get('/leaders', verifyUser, function(req, res){
 	if(req.params.count){
 		count = req.params.count;
 	}
-	var leaderQuery = User.find({});
-	leaderQuery.sort('victories', -1);
-	leaderQuery.limit(count);
-	leaderQuery.exec(function(err, docs){
+	var leaderQueryByVic = User.find({});
+	leaderQueryByVic.sort('victories', -1);
+	leaderQueryByVic.limit(count);
+	leaderQueryByVic.exec(function(err, docs){
 		console.log("an error happened" + err);
 		res.send(JSON.stringify(docs));
 	
