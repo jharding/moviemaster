@@ -533,7 +533,7 @@ app.get('/leaders', verifyUser, function(req, res){
 		count = req.params.count;
 	}
 	var leaderQuery = User.find({});
-	leaderQuery.sort([['victories','descending']]);
+	leaderQuery.sort('victories', -1);
 	leaderQuery.limit(count);
 	leaderQuery.exec(function(err, docs){
 		console.log("an error happened" + err);
