@@ -29,7 +29,11 @@ var GameAppView = Backbone.View.extend({
 
   submitAnswer: function(event) {
     event.preventDefault();
-   
+  
+    if ($('#question-answer').val() === '') {
+      $('#question-prompt form label').text('Incorrect. Try again.');
+    }
+
     if ($('#question-type').val() === '') {
       $('#question-prompt form label').text('Oops, you haven\'t selected a question.');
       return;
@@ -43,6 +47,7 @@ var GameAppView = Backbone.View.extend({
       if (data.match) {
         $('#question-prompt form label').text('Correct! Select a new question.');
         $('#question-prompt form input').val('');
+        $('#question-list .question').removeClass('selected');
       }
 
       else {
@@ -88,7 +93,7 @@ var GameAppView = Backbone.View.extend({
         }
 
         else if (questionType === 'actor') {
-          $($('#question-list .' + questionType)[0]).remove();
+          $($('#question-list .' + questionType + ':not(.selected)')[0]).remove();
         }
 
         else {
