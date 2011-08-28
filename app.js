@@ -219,7 +219,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		var userArray = [];
 		var playersArray = docs[0].players;
 		for(var i=0; i< playersArray.length; i++){
-			userArray.push(playersArray[i]._id+"");
+			userArray.push(playersArray[i]._id);
 			console.log("user array id element is : " + typeof playersArray[i]._id);
 		}	
 		console.log("user Array " + userArray);
