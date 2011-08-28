@@ -1,6 +1,6 @@
 module.exports = {
   server: {
-    hostname: 'http://nko2-nodemaster.herokuapp.com:' + (parseInt(process.env.PORT) || '3000'),
+    hostname: 'http://nko2-nodemaster.herokuapp.com'),
     port: parseInt(process.env.PORT) || '3000'
   },
 
