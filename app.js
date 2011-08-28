@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./_conf');
+var conf = require('./conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -534,10 +534,12 @@ app.get('/leaders', verifyUser, function(req, res){
 		count = req.params.count;
 	}
 	var leaderQuery = User.find({});
-	leaderQuery.sort({victories:-1});
+	leaderQuery.sort([['victories','descending']]);
 	leaderQuery.limit(count);
 	leaderQuery.exec(function(err, docs){
+		console.log("an error happened" + err);
 		res.send(JSON.stringify(docs));
+	
 	});
 });
 mongooseAuth.helpExpress(app);
