@@ -37,39 +37,39 @@ section#game
         button(type='submit', class='btn primary') Submit
 
 // !!! The mustache varibles I use here are just temporary, not sure what the names will actually be
-// script(id='user', type='text/html')
-//   span.hidden.userId {{ userId }}
-//   img(src='http://graph.facebook.com/{{ facebookId }}/picture')
-//   h3 {{ displayName }}
-//   p points: {{ points }}
+script(id='user', type='text/html')
+  span.hidden.userId {{ userId }}
+  img(src='http://graph.facebook.com/{{ facebookId }}/picture')
+  h3 {{ displayName }}
+  p points: {{ points }}
 
-// script(id='question', type='text/html')
-//   span {{ shortText }}
+script(id='question', type='text/html')
+  span {{ shortText }}
 
-// script(id='news', type='text/html')
-//   div.news-item.clearfix
-//     img(src='http://graph.facebook.com/{{ facebookId }}/picture')
-//     p +1 for 
-//       span {{ answer }}
-//       [{{ questionType }}]
+script(id='news', type='text/html')
+  div.news-item.clearfix
+    img(src='http://graph.facebook.com/{{ facebookId }}/picture')
+    p +1 for 
+      span {{ answer }}
+      [{{ questionType }}]
 
-// script(id='winner', type='text/html')
-//   div.winner
-//     h2 Congratulations {{ displayName }}, you won!
+script(id='winner', type='text/html')
+  div.winner
+    h2 Congratulations {{ displayName }}, you won!
 
-// script(id='loser', type='text/html')
-//   div.loser
-//     h2 You should watch more movies.
+script(id='loser', type='text/html')
+  div.loser
+    h2 You should watch more movies.
 
-// script(id='alert', type='text/html')
-//   div.news-item.clearfix.alert
-//     p {{ text }}
+script(id='alert', type='text/html')
+  div.news-item.clearfix.alert
+    p {{ text }}
 
-// // Bootstrap
-// script(id='bootstrap-users', type='text/bootstrap')
-//   !{ JSON.stringify(players) }
+// Bootstrap
+script(id='bootstrap-users', type='text/bootstrap')
+  !{ JSON.stringify(players) }
 
-// script(id='bootstrap-clips', type='text/bootstrap')
-//   !{ JSON.stringify(clips) }
+script(id='bootstrap-clips', type='text/bootstrap')
+  !{ JSON.stringify(clips) }
 
 input(type='hidden', value='#{ user.id }')#user-id
