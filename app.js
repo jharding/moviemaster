@@ -243,7 +243,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		var userArray = [];
 		var playersArray = docs[0].players;
 		for(var i=0; i< playersArray.length; i++){
-			userArray.push(playersArray[i]._id);
+			userArray.push(playersArray[i]._id+"");
 		}	
 		console.log("user Array " + userArray);
 		console.log("request params: " + req.user._id);
@@ -288,7 +288,9 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 					}
 			});
 		}else{
-			res.render('game', docs[0]);
+			var noDupUser = docs[0];
+			noDupUser.title = noDupUser.gamename;
+			res.render('game', noDupUser);
 		}
 	});
 	  // TODO
