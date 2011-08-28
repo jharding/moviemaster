@@ -350,8 +350,12 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 			gameAnswerChannel.trigger("answerEvent", {userId: req.user._id, question: req.body.question, answer: answer, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+        res.send({ match: true });
 			}
-			res.send();
+
+      else {
+        res.send({ match: false });
+      }
 		});
 		
 	}
