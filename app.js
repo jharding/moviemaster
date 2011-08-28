@@ -212,7 +212,7 @@ app.post('/game', verifyUser, function(req, res) {
 	}); 
 });
 
-app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
+app.get('/game/:id', verifyUser, function(req, res) {
 	var conditions = {_id: req.params.id}
 			, update = { $push: { players: req.user}}; 
 	Game.find(conditions, function(err, docs){
@@ -228,9 +228,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		if(userArray.indexOf(req.user._id) == -1){
 				Game.update(conditions, update, function(err){
 					if(!err){
-						Game.find(conditions, function(err, doc){
-                            res.send(doc[0]);
-                            //res.render('game', {});
+						Game.find(conditions, function(err, doc){                                              res.render('game', doc[0]);
 								if(doc[0].players.length > 3){	
 									var gameListChannel = pusher.channel("gameList");
 									var gameListInactiveEvent = "markInactiveEvent";
