@@ -250,7 +250,7 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		var userArray = [];
 		var playersArray = docs[0].players;
 		for(var i=0; i< playersArray.length; i++){
-			userArray.push(playersArray[i]._id);
+			userArray.push(playersArray[i]._id+"");
 		}	
 		console.log("user Array " + userArray);
 		console.log("request params: " + req.user._id);
@@ -295,7 +295,9 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 					}
 			});
 		}else{
-			res.render('game', docs[0]);
+			var noDupUser = docs[0];
+			noDupUser.title = noDupUser.gamename;
+			res.render('game', noDupUser);
 		}
 	});
 	  // TODO
@@ -529,7 +531,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 app.post('/game/:id/end', verifyUser, function(req, res) {
   // TODO
   var conditions = {_id: req.params.id},	update = {$set : {status: 'finished'}};
-  Game.update(conditions, update, function(err){
+  Game.remove(conditions, function(err){
 				  	//pusher sends game over signal
 			var userConditions = {_id: req.user._id},
 					userUpdate={$inc: {victories: 1}};

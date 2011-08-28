@@ -71,6 +71,11 @@ script(id='alert', type='text/html')
   div.news-item.clearfix.alert
     p {{ text }}
 
+script(id='forceStart', type='text/html')
+  h2 You can now force the game to start if you no longer want to wait for other players 
+  form#force-start-form
+    button.btn.primary Start Game
+
 // Bootstrap
 script(id='bootstrap-users', type='text/bootstrap')
   !{ JSON.stringify(players) }
