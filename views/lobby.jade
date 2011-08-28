@@ -1,4 +1,5 @@
 section#lobby
+  h1 Moviemaster Central 
   div.row
     div.span9
       div#game-management
@@ -10,8 +11,8 @@ section#lobby
     div.offset1.span6
       div#leaderboards
         div#tabs.clearfix
-          div#wins-tab.tab.selected Victories
-          div#points-tab.tab Points
+          div#wins-tab.tab.selected Top 10 Victories
+          div#points-tab.tab Top 10 Points
         div#wins-list
           - var i = 1
           - leaders.topVictories.forEach(function(leader) {
