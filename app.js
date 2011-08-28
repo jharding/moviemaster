@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./_conf');
+var conf = require('./conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -219,7 +219,7 @@ app.post('/game', verifyUser, function(req, res) {
 				gameInstance.clips.push(docs[0]);
 					gameInstance.save(function(err){
 						if(!err){
-							console.log("game instance " + gameInstance._id);
+						//console.log("game instance " + gameInstance._id);
 							res.redirect('/game/'+gameInstance._id+'/');
 						// 	var gameListChannel = pusher.channel("gameList");
 						// 	var gameListNewGameEvent = "newGameEvent";
@@ -228,7 +228,7 @@ app.post('/game', verifyUser, function(req, res) {
 						// });
 
 						}else{
-							console.log("game instance is fucked up !");
+							console.log("game instance is not up !");
 						}
 					});	
 			});
@@ -351,7 +351,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 			var clipIndex;
 			for (clipIndex = 0; clipIndex < game.clips.length; clipIndex++) {
 				if (game.clips[clipIndex]._id == req.body.clipId) {
-					console.log(clipIndex + "!!!!!!!!!!!!");
+					//console.log(clipIndex + "!!!!!!!!!!!!");
 					break;
 				}
 			}
@@ -366,10 +366,10 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 				if (levenshtein(userActor, answerActor) < (answerActor.length * 0.20)) {
 					result = 'right';
 					answer = game.clips[clipIndex].actors[actorIndex];
-					console.log(game.clips[clipIndex]);
+					//console.log(game.clips[clipIndex]);
 					game.clips[clipIndex].actors.splice(actorIndex, 1);
 					//game.clips[1].remove();
-					console.log(game.clips[clipIndex]);
+					//console.log(game.clips[clipIndex]);
 					game.save(function (err) {if(err) console.log(err)});
 					break;
 				}
@@ -467,14 +467,14 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 								var j;
 								for (j = 0; j < game.clips.length; j++) {
 									if (game.clips[j]._id == req.body.clipId) {
-										console.log(j + "!!!!!!!!!!!!");
+										//console.log(j + "!!!!!!!!!!!!");
 										break;
 									}
 								}
-								console.log(game.clips[j]);
+								//console.log(game.clips[j]);
 								game.clips[j].actors.splice(i, 1);
 								//game.clips[1].remove();
-								console.log(game.clips[j]);
+								//console.log(game.clips[j]);
 								game.save(function (err) {if(err) console.log(err)});
 							});
 							break;
@@ -549,21 +549,6 @@ var randGame = function(){
 	return gameArray;
 }
 
-app.get('/leaders', verifyUser, function(req, res){
-	var count = 10;
-	console.log("called for score board");
-	if(req.params.count){
-		count = req.params.count;
-	}
-	var leaderQueryByVic = User.find({});
-	leaderQueryByVic.sort('victories', -1);
-	leaderQueryByVic.limit(count);
-	leaderQueryByVic.exec(function(err, docs){
-		console.log("an error happened" + err);
-		res.send(JSON.stringify(docs));
-	
-	});
-});
 mongooseAuth.helpExpress(app);
 
 app.listen(conf.server.port);
