@@ -182,15 +182,15 @@ app.post('/game', verifyUser, function(req, res) {
 	var gameInstance = new Game();
 	gameInstance.gamename = req.body.gameName;
 	var query = Clip.find({});
-	var randGame = randGame();
+	var myRandGame = randGame();
 	query.limit(1);
-	query.skip(randGame[0]);
+	query.skip(myRandGame[0]);
 	query.exec(function (err, docs){
 		gameInstance.clips.push(docs[0]);
-		query.skip(randGame[1]);
+		query.skip(myRandGame[1]);
 		query.exec(function (err, docs){
 			gameInstance.clips.push(docs[0]);
-			query.skip(randGame[2]);
+			query.skip(myRandGame[2]);
 			query.exec(function (err, docs){
 				gameInstance.clips.push(docs[0]);
 					gameInstance.save(function(err){
