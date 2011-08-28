@@ -118,7 +118,7 @@ var GameAppView = Backbone.View.extend({
       fb = user.get('fb');
 
       news = ich.news({ answer: answer, facebookId: fb.id, questionType: questionType });
-      $(news).addClass('user' + (user.get('userPosition') + 1));
+      $(news).addClass('user' + user.get('userPosition'));
 
       $('#news-feed').prepend(news);
     }

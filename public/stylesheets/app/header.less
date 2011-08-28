@@ -3,11 +3,27 @@ header {
   .container {
     padding: 0;
     a {
+      float: left;
       text-decoration: none;
       h1 {
         #font .sans-serif(bold, 36px, 48px);
         color: #f5f5f5;
         margin: 0;
+      }
+    }
+    p {
+      margin: 0 0 0 15px;
+      float: right;
+      #font .sans-serif(normal, 16px, 24px);
+      color: #f5f5f5;
+      span {
+        color: #67e46f;
+      }
+      a {
+        color: #f5f5f5;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

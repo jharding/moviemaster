@@ -10,6 +10,7 @@ var UsersView = Backbone.View.extend({
     this.collection.bind('reset', this.checkGameStatus, this);
 
     channel.bind('newUsers', this.refreshUsers, this);
+    channel.bind('startGame', this.refreshUsers, this);
 	}, 
 	
 	render: function () {
