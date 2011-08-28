@@ -3,7 +3,7 @@ require('nko')('Rjtuc6pfUq+RSg+b');
  * Module dependencies.
  */
 
-var conf = require('./conf');
+var conf = require('./_conf');
 var express = require('express');
 var Pusher = require('pusher');
 var mongoose = require('mongoose');
@@ -229,7 +229,11 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 				Game.update(conditions, update, function(err){
 					if(!err){
 						Game.find(conditions, function(err, doc){
-                res.render('game', doc[0]);
+								var responseDoc = doc[0];
+								for(var j = 0; j < responseDoc.players.length; j++){
+									responseDoc.players[j].userPosition = j; 			
+								}
+                res.render('game', responseDoc);
 								if(doc[0].players.length > 3){	
 									var gameListChannel = pusher.channel("gameList");
 									var gameListInactiveEvent = "markInactiveEvent";
@@ -251,6 +255,10 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
               var updateUserChannel = pusher.channel(req.params.id);
               var updateUserEvent = "newUsers";
               var updateUserData = doc[0].players;
+							for(var j = 0; j < responseDoc.players.length; j++){
+								updateUserData[j].userPosition = j; 			
+							}
+
               updateUserChannel.trigger(updateUserEvent, updateUserData, function(err, request, response){
             });	
 						});	
@@ -490,7 +498,7 @@ app.post('/game/:id/end', verifyUser, function(req, res) {
 				  	//pusher sends game over signal
 			var userConditions = {_id: req.user._id},
 					userUpdate={$inc: {victories: 1}};
-			User.update(userConditions, update, function(err){
+			User.update(userConditions, userUpdate, function(err){
 				var channel = pusher.channel(conditions._id);
 				var endGameData = "endGame";
 				var pusherEndGameEvent = "endGame";
