@@ -27,9 +27,31 @@ var GameAppView = Backbone.View.extend({
 
   submitAnswer: function(event) {
     event.preventDefault();
-    
+   
+    if ($('#question-type').val() === '') {
+      $('#question-prompt form label').text('Oops, you haven\'t selected a question.');
+      return;
+    }
+
     var url = 'answer';
-    $.post(url, $('#question-prompt form').serialize());
+    var data = $('#question-prompt form').serialize();
+    $('#question-prompt form input').attr('disabled', '');
+    $('#question-prompt form button').attr('disabled', '');
+    $.post(url, data, function(data) {
+      if (data.match) {
+        $('#question-prompt form label').text('Correct! Select a new question.');
+        $('#question-prompt form input').val('');
+      }
+
+      else {
+        $('#question-prompt form label').text('Incorrect. Try again.');
+      }
+
+      $('#question-prompt form input').removeAttr('disabled');
+      $('#question-prompt form button').removeAttr('disabled');
+    }).error(function() {
+      $('#question-prompt form label').text('Oops an error occured. Try again.');
+     });   
   },
 
   startGame: function() {
@@ -55,16 +77,32 @@ var GameAppView = Backbone.View.extend({
     }, this);
 
     if (result === 'right') {
-      $('#question-prompt form input').val('');
-      $('#question-prompt form label').text('Select a new question to answer!');
-      $('#question-list ' + questionType).remove();
+      if ($('#question-prompt form input#question-type').val() === questionType) {
+        if (questionType === 'actor' && $('.question.actor').length === 1) {
+          $('#question-list .' + questionType).remove();
+          $('#question-prompt form label').text('Somebody answered this question. Select a new one.');
+          $('#question-prompt form input').val('');
+        }
 
-      if (questionType === 'actor') {
-        $($('#question-list .' + questionType)[0]).remove();
+        else if (questionType === 'actor') {
+          $($('#question-list .' + questionType)[0]).remove();
+        }
+
+        else {
+          $('#question-list .' + questionType).remove();
+          $('#question-prompt form label').text('Somebody answered this question. Select a new one.');
+          $('#question-prompt form input').val('');
+        }
       }
 
       else {
-        $('#question-list .' + questionType).remove();
+        if (questionType === 'actor') {
+          $($('#question-list .' + questionType)[0]).remove();
+        }
+
+        else {
+          $('#question-list .' + questionType).remove();
+        }
       }
 
       user.set({ points: user.get('points') + 1 });
