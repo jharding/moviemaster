@@ -239,28 +239,27 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 									var gameListInactiveEvent = "markInactiveEvent";
 									var gameListInactiveData = conditions;	
 									gameListChannel.trigger(gameListInactiveEvent, gameListInactiveData, function(err, request, response){
-								});
-							}else{
-								var gameListChannel = pusher.channel("gameList");
-								var gameListIncrementEvent = "incrementEvent";
-                                var gameListIncrementData = conditions;
-                                gameListIncrementData.id = conditions._id;
-                                gameListIncrementData.gameName = doc[0].gamename;
-								gameListIncrementData.fbIds = und.map(doc[0].players, function(player){
-                                   return player.fb.id;
-                               });
+									});
+								}else{
+									var gameListChannel = pusher.channel("gameList");
+									var gameListIncrementEvent = "incrementEvent";
+                  var gameListIncrementData = conditions;
+                  gameListIncrementData.id = conditions._id;
+                  gameListIncrementData.gameName = doc[0].gamename;
+									gameListIncrementData.fbIds = und.map(doc[0].players, function(player){
+                    return player.fb.id;
+                  });
 								gameListChannel.trigger(gameListIncrementEvent, gameListIncrementData, function(err, request, reponse){
 								});
 							}
               var updateUserChannel = pusher.channel(req.params.id);
               var updateUserEvent = "newUsers";
-              var updateUserData = doc[0].players;
-							for(var j = 0; j < responseDoc.players.length; j++){
-								updateUserData[j].userPosition = j; 			
-							}
-
-              updateUserChannel.trigger(updateUserEvent, updateUserData, function(err, request, response){
-            });	
+              //var updateUserData = doc[0].players;
+							//for(var j = 0; j < responseDoc.players.length; j++){
+							//		updateUserData[j].userPosition = j; 			
+							//}
+              updateUserChannel.trigger(updateUserEvent, responseDoc.players, function(err, request, response){
+							});	
 						});	
 					}
 			});
@@ -516,7 +515,7 @@ app.post('/game/:id/end', verifyUser, function(req, res) {
 });
 
 var randGame = function(){
-	var count = 4;
+	var count = conf.random.num;
 	gameArray = [];
 	while(gameArray.length < 3){
 		rand = Math.floor(Math.random()*count);
@@ -534,7 +533,7 @@ app.get('/leaders', verifyUser, function(req, res){
 		count = req.params.count;
 	}
 	var leaderQuery = User.find({});
-	leaderQuery.sort([['victories','descending']]);
+	leaderQuery.sort('victories', -1);
 	leaderQuery.limit(count);
 	leaderQuery.exec(function(err, docs){
 		console.log("an error happened" + err);
