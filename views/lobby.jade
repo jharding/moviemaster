@@ -14,7 +14,7 @@ section#lobby
           div#points-tab.tab Points
         div#wins-list
           - var i = 1
-          - topVictories.forEach(function(leader) {
+          - leaders.topVictories.forEach(function(leader) {
             div.row
               span.place #{ i }.
               img(src='http://graph.facebook.com/#{ leader.fb.id }/picture')
@@ -24,7 +24,7 @@ section#lobby
           -})
         div(style='display: none;')#points-list
           - var i = 1
-          - topPoints.forEach(function(leader) {
+          - leaders.topPoints.forEach(function(leader) {
             div.row
               span.place #{ i }.
               img(src='http://graph.facebook.com/#{ leader.fb.id }/picture')
