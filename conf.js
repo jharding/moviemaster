@@ -1,7 +1,7 @@
 module.exports = {
   server: {
     hostname: 'http://72.14.190.56:3000',
-    port: parseInt(process.env.port) || '3000'
+    port: parseInt(process.env.PORT) || '3000'
   },
 
   facebook: {
