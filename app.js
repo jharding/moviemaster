@@ -126,13 +126,20 @@ function verifyGameOpening(req, res, next) {
 		if(doc.length > 0 && doc[0].players.length < 4){
 			next();
 		}else{
-			res.send({"message":"invalid game or game has already started"});
+			//res.send({"message":"invalid game or game has already started"});
+			res.redirect('/error/' + 'Invalid game or game has already started');
 		}
 	});	
   // TODO
 }
 
 // User Management Routes
+
+app.get('/error/:message', function(req, res) {
+	
+	res.render('error', {title: 'Error', errorMessage: req.params.message});
+});
+
 
 app.get('/login', function(req, res) {
   res.render('login', {
@@ -412,7 +419,7 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 					//console.log(userTitle);
 					//console.log(answerTitle);
 					
-					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.20)) {
+					if (levenshtein(userTitle, answerTitle) < (answerTitle.length * 0.30)) {
 						result = 'right';
 						answer = doc.title;
 						break;
