@@ -18,5 +18,9 @@ module.exports = {
     appId: '7843',
     appKey: 'f6cbbef2da8723374cb3',
     secret: '748df578f3aed67a3210'
-  }
+  },
+	
+	random: {
+		num: 78
+	}
 }
