@@ -302,10 +302,15 @@ app.post('/game/:id/start', verifyUser, function(req, res){
 	var conditions = {_id: req.params.id};
 	var update = { $set: { status: 'inProgress'}}; 
 	Game.update(conditions, update, function(err){
-		var channel = pusher.channel(req.params.id);
-		var data = "startGame";
-		var pusherEvent = "startGame";
-		channel.trigger(pusherEvent, data, function(err, request, response){
+		Game.find(conditions, function(err, docs){
+			var channel = pusher.channel(req.params.id);
+			var pusherEvent = "startGame";
+			var data = doc[0].players;
+			for(var j = 0; j < responseDoc.players.length; j++){
+					data[j].userPosition = j; 			
+			}
+			channel.trigger(pusherEvent, data, function(err, request, response){
+			});
 		});
 	});
 });
