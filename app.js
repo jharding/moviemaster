@@ -228,10 +228,11 @@ app.get('/game/:id', [verifyUser, verifyGameOpening], function(req, res) {
 		console.log("request params: " + req.user._id);
 		console.log("request params type: " + typeof req.user._id);
 		if(userArray.indexOf(req.user._id) == -1){
-				Game.update(conditions, update, function(err, docs){
+				Game.update(conditions, update, function(err){
 					if(!err){
 						Game.find(conditions, function(err, doc){
-							res.render('game', doc[0]);
+                            doc[0].debug = true;
+                            res.render('game', doc[0]);
 								if(doc[0].players.length > 3){	
 									var gameListChannel = pusher.channel("gameList");
 									var gameListInactiveEvent = "markInactiveEvent";
@@ -351,8 +352,12 @@ app.post('/game/:id/answer', verifyUser, function(req, res) {
 			gameAnswerChannel.trigger("answerEvent", {userId: req.user._id, question: req.body.question, answer: answer, result: result});
 			if (result == 'right') {
 				User.update({_id: req.user._id}, {$inc: {points: 1}}, {multi: false}, function(err, doc){});
+        res.send({ match: true });
 			}
-			res.send();
+
+      else {
+        res.send({ match: false });
+      }
 		});
 		
 	}
