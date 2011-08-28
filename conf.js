@@ -21,6 +21,6 @@ module.exports = {
   },
 	
 	random: {
-		num: 78
+		num: 77
 	}
 }
