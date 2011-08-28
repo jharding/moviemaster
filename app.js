@@ -76,10 +76,7 @@ var User = mongoose.model('User', UserSchema);
 mongoose.connect(conf.mongo.uri);
 
 var app = module.exports = express.createServer();
-//var MemoryStore = require('connect/middleware/session/memory');
-//app.use(express.bodyDecoder());
-//app.use(express.cookieDecoder());
-//app.use(express.session({ store: new MemoryStore({ reapInterval: 60000 * 10 }) }));
+
 // Configuration
 
 app.configure(function(){
@@ -101,7 +98,8 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 // Route Middleware
