@@ -522,7 +522,7 @@ var randGame = function(){
 	return gameArray;
 }
 
-app.get('/leaders/:count', verifyUser, function(req, res){
+app.get('/leaders', verifyUser, function(req, res){
 	var count = 10;
 	if(req.params.count){
 		count = req.params.count;
@@ -532,7 +532,7 @@ app.get('/leaders/:count', verifyUser, function(req, res){
 	leaderQuery.limit(count);
 	leaderQuery.exec(function(err, docs){
 		res.send(JSON.stringify(docs));
-	});		
+	});
 });
 mongooseAuth.helpExpress(app);
 
