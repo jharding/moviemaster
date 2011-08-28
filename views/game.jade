@@ -55,11 +55,17 @@ script(id='news', type='text/html')
 
 script(id='winner', type='text/html')
   div.winner
-    h2 Congratulations {{ displayName }}, you won!
+    h2 You won! Good for you.
+    p Go to 
+      a(href='/') lobby
+      ?
 
 script(id='loser', type='text/html')
   div.loser
     h2 You should watch more movies.
+    p Go to 
+      a(href='/') lobby
+      ?
 
 script(id='alert', type='text/html')
   div.news-item.clearfix.alert
